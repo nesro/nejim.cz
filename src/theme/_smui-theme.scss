@@ -1,0 +1,25 @@
+//
+// MDC Theme
+// https://github.com/hperrin/svelte-material-ui/blob/master/site/src/theme/_smui-theme.scss
+//
+
+@import "@material/theme/color-palette";
+
+a {
+    color: white !important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+$mdc-theme-primary: grey;
+$mdc-theme-secondary: white;
+
+$mdc-theme-background: white;
+$mdc-theme-surface: grey;
+
+$mdc-theme-error: $material-color-red-900;
+

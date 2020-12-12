@@ -1,11 +1,24 @@
+<svelte:head>
+  <title>nejim.cz</title>
+</svelte:head>
+
 <script>
-	export let name;
+	import Info from "./components/Info.svelte";
+	import TopAppBar from "./components/TopAppBar.svelte";
+
+	export let author;
 </script>
 
 <main>
-	<h1>{name}</h1>
-	<h2>Aplikace pro přeušovaný půst</h2>
-	<p>Work in progress! See the code for more info: <a target="_blank" href="https://github.com/nesro/nejim.cz">https://github.com/nesro/nejim.cz</a></p>
+	<TopAppBar />
+
+
+	<div style="margin: 2.5em auto; max-width: 768px;">
+	<Info />
+	</div>
+
+	<!-- footer>author: {author}</footer> -->
+
 </main>
 
 <style>
@@ -14,13 +27,6 @@
 		padding: 1em;
 		max-width: 240px;
 		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
 	}
 
 	@media (min-width: 640px) {
