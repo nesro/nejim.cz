@@ -21,6 +21,8 @@
   },
   "dependencies": {
     "@smui/card": "^1.0.0",
+    "@smui/drawer": "^1.0.0",
+    "@smui/list": "^1.0.0",
     "node-sass": "^5.0.0",
     "postcss": "^8.2.1",
     "rollup-plugin-postcss": "^4.0.0",

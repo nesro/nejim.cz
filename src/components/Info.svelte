@@ -3,11 +3,7 @@
 </script>
 
 <style>
-  .a {
-	color: white;
-    text-decoration: underline;
-    font-size: 90px;
-    }
+
 </style>
 
 <main>
@@ -15,9 +11,9 @@
 
     <div class="paper-container">
         <Paper elevation={3} class="paper-demo">
-            <Title>nejim.cz</Title>
+            <Title>nejim.cz - Appka na přerušovaný půst</Title>
             <Subtitle>Aplikace pro přerušovaný půst</Subtitle>
-            <Content>Na webu se pracuje! Koukni na kód: <a class="a" target="_blank" href="https://github.com/nesro/nejim.cz">https://github.com/nesro/nejim.cz</a></Content>
+            <Content>Na webu se pracuje! Koukni na kód: <a target="_blank" href="https://github.com/nesro/nejim.cz">https://github.com/nesro/nejim.cz</a></Content>
         </Paper>
     </div>
 
