@@ -48,19 +48,6 @@ export default {
 		// a separate file - better for performance
 		css({ output: 'bundle.css' }),
 
-		postcss({
-			extract: true,
-			minimize: true,
-			use: [
-			  [
-				"sass",
-				{
-				  includePaths: ["./src/theme", "./node_modules"],
-				},
-			  ],
-			],
-		  }),
-
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In
 		// some cases you'll need additional configuration -
@@ -71,6 +58,19 @@ export default {
 			dedupe: ['svelte']
 		}),
 		commonjs(),
+
+		postcss({
+			extract: true,
+			minimize: false,
+			use: [
+			  [
+				"sass",
+				{
+				  includePaths: ["./src/theme", "./node_modules"],
+				},
+			  ],
+			],
+		  }),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated

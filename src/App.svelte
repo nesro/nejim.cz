@@ -15,6 +15,11 @@
 	});
 
 	export let author;
+
+	let fastingHours = 16
+	let from = new Date()
+	let to = new Date()
+	to.setHours(to.getHours() + fastingHours)
 </script>
 
 <main>
@@ -24,7 +29,10 @@
 		{#if activeValue === 'info'}
 			<Info />
 		{:else if activeValue === 'stopwatch'}
-			<Stopwatch />
+			<h1>Work in progress :)</h1>
+			<p>Fasting goal: {fastingHours}</p>
+			<Stopwatch name='from' initDate={from} />
+			<Stopwatch name='to' initDate={to} />
 		{/if}
 	</div>
 
@@ -35,7 +43,6 @@
 <style>
 	main {
 		text-align: center;
-		padding: 1em;
 		max-width: 240px;
 		margin: 0 auto;
 	}

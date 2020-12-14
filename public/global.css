@@ -3,3 +3,28 @@ html, body {
   width: 100%;
   height: 100%;
 }
+
+.container{
+	height: 100%;
+	width: 100%;
+  }
+
+  .center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	font: 20px 'Roboto', sans-serif;
+  }
+
+  :root{
+    --svtt-popup-bg-color: white;
+    --svtt-popup-color: black;
+    --svtt-popup-radius: 10px;
+    --svtt-font-size: 20px;
+    --svtt-button-color: black;
+    --svtt-button-bg-color: transparent;
+    --svtt-border: 1px solid grey;
+    --svtt-button-box-shadow: none;
+    --svtt-bar-color: grey;
+  }
