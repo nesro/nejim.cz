@@ -25,7 +25,7 @@
 <main>
 	<TopAppBar />
 
-	<div style="margin: 2.5em auto; max-width: 768px;">
+	<div style="margin: 1em auto; max-width: 768px;">
 		{#if activeValue === 'info'}
 			<Info />
 		{:else if activeValue === 'stopwatch'}

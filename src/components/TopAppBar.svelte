@@ -35,7 +35,7 @@
         <Row>
             <Section>
                 <IconButton class="material-icons" on:click={drawerOpenAction}>menu</IconButton>
-                <Title>nejim.cz</Title>
+                <Title>nejim<img src="nejim.png" alt="nejim.cz logo" width="28" height="28" />cz</Title>
             </Section>
             <Section align="end" toolbar>
                 <IconButton class="material-icons" aria-label="App" on:click={() => active.set('stopwatch')}>schedule</IconButton>
