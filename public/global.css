@@ -28,3 +28,13 @@ html, body {
     --svtt-button-box-shadow: none;
     --svtt-bar-color: grey;
   }
+
+#container-progress {
+    width: 300px;
+    height: 300px;
+}
+
+#container-progress > svg {
+    width: 100%;
+    display: block;
+}

@@ -4,6 +4,7 @@
 
 <script>
 	import Info from "./components/Info.svelte";
+import Progress from "./components/Progress.svelte";
 	import Stopwatch from "./components/Stopwatch.svelte";
 	import TopAppBar from "./components/TopAppBar.svelte";
 
@@ -31,7 +32,12 @@
 		{:else if activeValue === 'stopwatch'}
 			<h1>Work in progress :)</h1>
 			<p>Fasting goal: {fastingHours}</p>
+
+			<label for="fastingHours">Plnovaná délka půstu:</label>
+			<input type="number" id="quantity" name="quantity" min="1" max="72" value="16">
+
 			<Stopwatch name='from' initDate={from} />
+			<Progress />
 			<Stopwatch name='to' initDate={to} />
 		{/if}
 	</div>

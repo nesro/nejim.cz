@@ -6,6 +6,7 @@
 
 <script>
     import Flatpickr from 'svelte-flatpickr/src/Flatpickr.svelte'
+    import Progress from './Progress.svelte';
 
     export let name
     export let initDate
@@ -59,7 +60,6 @@
 
 <main>
     <h2>{name}</h2>
-
     <Flatpickr
             {options}
             name='end'
