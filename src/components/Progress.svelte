@@ -37,7 +37,7 @@
             circle.path.setAttribute('stroke', state.color);
         },
         })
-        circle.animate(0.3);
+        circle.animate(0.9);
         circle.setText(Date.now())
     });
 
@@ -59,6 +59,6 @@
 
 </style>
 <main>
-    <h1>progress</h1>
+    <h2>progress</h2>
     <div id="container-progress"></div>
 </main>

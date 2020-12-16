@@ -38,3 +38,11 @@ html, body {
     width: 100%;
     display: block;
 }
+
+.selectHours .flatpickr-time-separator {
+  display: none;
+}
+
+.selectHours .numInputWrapper:nth-child(3) {
+  display: none;
+}

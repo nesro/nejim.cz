@@ -4,9 +4,12 @@
 
 <script>
 	import Info from "./components/Info.svelte";
-import Progress from "./components/Progress.svelte";
+	import Progress from "./components/Progress.svelte";
+	import SelectHours from "./components/SelectHours.svelte";
 	import Stopwatch from "./components/Stopwatch.svelte";
 	import TopAppBar from "./components/TopAppBar.svelte";
+
+	import { writable } from 'svelte/store';
 
 	import { active } from './store';
 
@@ -17,10 +20,10 @@ import Progress from "./components/Progress.svelte";
 
 	export let author;
 
-	let fastingHours = 16
+	const defaultFastingHours = "16"
 	let from = new Date()
 	let to = new Date()
-	to.setHours(to.getHours() + fastingHours)
+	to.setHours(to.getHours() + defaultFastingHours)
 </script>
 
 <main>
@@ -31,11 +34,7 @@ import Progress from "./components/Progress.svelte";
 			<Info />
 		{:else if activeValue === 'stopwatch'}
 			<h1>Work in progress :)</h1>
-			<p>Fasting goal: {fastingHours}</p>
-
-			<label for="fastingHours">Plnovaná délka půstu:</label>
-			<input type="number" id="quantity" name="quantity" min="1" max="72" value="16">
-
+			<SelectHours name='fastingHours' value={defaultFastingHours} />
 			<Stopwatch name='from' initDate={from} />
 			<Progress />
 			<Stopwatch name='to' initDate={to} />

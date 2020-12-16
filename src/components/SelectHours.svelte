@@ -6,35 +6,22 @@
 
 <script>
     import Flatpickr from 'svelte-flatpickr/src/Flatpickr.svelte'
+
     import { fastingHours } from '../store';
 
     export let name
-    export let initDate
 
-    let value = initDate
-    let formattedValue
+    export let value
+    export let formattedValue
     let flatpickr
 
-    let fastingHoursValue
-	const unsubscribeFastingHours = fastingHours.subscribe(value => {
-        fastingHoursValue = value;
-
-        if (name === 'to') {
-            let now = new Date()
-            now.setHours(now.getHours() + fastingHoursValue)
-            value = now
-            flatpickr && flatpickr.setDate(value, true, 'Y-m-d H:i')
-
-            console.log('new fasting hours', fastingHoursValue, ' new date ', now)
-        }
-	});
-
 	const options = {
+        noCalendar: true,
         enableTime: true,
         time_24hr: true,
-        dateFormat: 'Y-m-d H:i',
-		onChange(selectedDates, dateStr) {
-			console.log('flatpickr hook', selectedDates, dateStr);
+        dateFormat: "H",
+		onChange(_, dateStr) {
+            fastingHours.set(+dateStr)            
 		},
 		onOpen() {
 			console.log('onOpen');
@@ -42,12 +29,12 @@
         onClose() {
             console.log('onClose')
         },
-        onReady() {
-            console.log('onReady')
+        onReady (_, __, fp) {
+            fp.calendarContainer.classList.add("selectHours");
         }
     };
     
-    $: console.log({ value, formattedValue });
+    //$: console.log({ selectHours, formattedSelectHours });
     
 	const handleOpen = (event) => {
         event.preventDefault();
@@ -76,7 +63,7 @@
     <h2>{name}</h2>
     <Flatpickr
             {options}
-            name='end'
+            name='selectHours'
             bind:value
             bind:formattedValue
             bind:flatpickr
