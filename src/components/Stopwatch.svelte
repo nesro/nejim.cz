@@ -6,7 +6,8 @@
 
 <script>
     import Flatpickr from 'svelte-flatpickr/src/Flatpickr.svelte'
-    import { fastingHours } from '../store';
+    import { fastingHours } from '../store.js';
+    import { onDestroy } from 'svelte'
 
     export let name
     export let initDate
@@ -66,6 +67,8 @@
     const handleClose = (event) => {
         console.log('closed');
     }
+
+    onDestroy(unsubscribeFastingHours)
 </script>
 
 <style>
