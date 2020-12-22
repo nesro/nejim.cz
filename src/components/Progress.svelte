@@ -4,6 +4,8 @@
     
     let circle
 
+    export let progressValue
+
     onMount(async () => {
         circle = new ProgressBar.Circle('#container-progress', {
         color: '#FCB03C',
@@ -19,7 +21,7 @@
                 // Text color.
                 // Default: same as stroke color (options.color)
                 color: '#f00',
-                fontSize: '28px',
+                fontSize: '16px',
                 position: 'absolute',
                 left: '50%',
                 top: '50%',
@@ -37,11 +39,16 @@
             circle.path.setAttribute('stroke', state.color);
         },
         })
-        circle.animate(0.9);
-        circle.setText(Date.now())
+
+/*         circle.animate(0.5);
+        circle.setText(progressValue) */
     });
 
-
+    export function progressAnimate(value, hours, minutes, seconds) {
+        
+        circle.animate(value );
+        circle.setText(parseFloat(value * 100).toFixed(2) + '%<br>'+hours+':'+minutes+':'+seconds)
+    }
 
 </script>
 

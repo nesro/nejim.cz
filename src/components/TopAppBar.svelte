@@ -40,6 +40,7 @@
             <Section align="end" toolbar>
                 <IconButton class="material-icons" aria-label="App" on:click={() => active.set('stopwatch')}>schedule</IconButton>
                 <IconButton class="material-icons" aria-label="Info" on:click={() => active.set('info')}>info</IconButton>
+                <IconButton class="material-icons" aria-label="History" on:click={() => active.set('history')}>auto_graph</IconButton>
             </Section>
         </Row>
     </TopAppBar>

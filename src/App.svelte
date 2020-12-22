@@ -10,6 +10,7 @@
 	import { writable } from 'svelte/store';
 
 	import { active } from './store';
+import FastHistory from "./components/FastHistory.svelte";
 	
 
 	let activeValue
@@ -29,6 +30,8 @@
 			<Info />
 		{:else if activeValue === 'stopwatch'}
 			<FastingApp />
+		{:else if activeValue === 'history'}
+			<FastHistory />
 		{/if}
 	</div>
 

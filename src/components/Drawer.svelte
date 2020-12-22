@@ -37,6 +37,9 @@
                 <Item href="javascript:void(0)" on:click={() => setActiveFromDrawer('info')} activated={activeValue === 'info'}>
                   <Text>Informace</Text>
                 </Item>
+                <Item href="javascript:void(0)" on:click={() => setActiveFromDrawer('history')} activated={activeValue === 'history'}>
+                  <Text>Historie</Text>
+                </Item>
               </List>
             </Content>
           </Drawer>
