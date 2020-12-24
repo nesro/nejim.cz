@@ -1,16 +1,22 @@
 <script>
-    import Progress from "./Progress.svelte"
-	import SelectHours from "./SelectHours.svelte"
-	import Stopwatch from "./Stopwatch.svelte"
-	import FastStatus from "./FastStatus.svelte"
+	
+	import Dialog, { Title, Content, Actions, InitialFocus } from '@smui/dialog'
+	import Button, { Label } from '@smui/button'
+	import { Text } from '@smui/list';
+    import Progress from './Progress.svelte'
+	import SelectHours from './SelectHours.svelte'
+	import Stopwatch from './Stopwatch.svelte'
+	import FastStatus from './FastStatus.svelte'
 	import { onMount, onDestroy } from 'svelte'
 
 	import { fastStarted, fastingHours } from '../store.js'
-	import { timestampToHMS } from '../utils.js'
 
 	const defaultFastingHours = "16"
 	let from = new Date()
 	let to = new Date()
+
+	let xxx = new Date()
+
 	to.setHours(to.getHours() + defaultFastingHours)
 
 	const handleStartFast = () => {
@@ -61,14 +67,46 @@
 
 	onMount(updateLoop)
 	onDestroy(fastStartedUnsubscribe)
+
+	
+	let simpleDialog
+	let clicked
+
 </script>
 
 <main>
 	<h1>Work in progress :)</h1>
 	
-	<button on:click="{handleStartFast}">začni půst</button>
-	<button on:click="{handleEndFast}">přeruš půst</button>
-	<button on:click="{handleFastInfo}">půst info</button>
+
+	<div>
+		<Dialog bind:this={simpleDialog} aria-labelledby="simple-title" aria-describedby="simple-content">
+		  <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+		  <Title id="simple-title">Uložit půst</Title>
+		  <Content id="simple-content">
+			Super awesome dialog body text?
+
+			<Stopwatch name='from' initDate={xxx} />
+			<Stopwatch name='to' initDate={xxx} />
+
+			Půst lze po uložení editovat v historii půstů.
+
+		  </Content>
+		  <Actions>
+			<Button color="secondary" on:click={() => clicked = 'No'}>
+			  	<Label>No</Label>
+			</Button>
+			<Button color="secondary"on:click={() => clicked = 'Yes'} default use={[InitialFocus]}>
+				<Label>Yes</Label>
+			</Button>
+		  </Actions>
+		</Dialog>
+	
+		<Button on:click={() => simpleDialog.open()}><Label>Open Dialog</Label></Button>
+	  </div>
+
+	<Button on:click="{handleStartFast}">začni půst</Button>
+	<Button on:click="{handleEndFast}">přeruš půst</Button>
+	<Button on:click="{handleFastInfo}">půst info</Button>
 
 			<SelectHours name='fastingHours' value={defaultFastingHours} />
 			<Stopwatch name='from' initDate={from} />

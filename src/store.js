@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store'
 
-export const active = writable('history') // info, stopwatch, history
+export const active = writable('stopwatch') // info, stopwatch, history
 
 export const drawer = writable(false)
 
