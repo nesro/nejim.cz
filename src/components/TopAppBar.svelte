@@ -24,6 +24,12 @@
     const drawerOpenAction = () => {
         drawer.set(!drawerValue)
     }
+
+    const setActiveFromTopAppBar = (toActive) => {
+        drawer.set(false)
+        active.set(toActive)
+        localStorage.setItem("active", toActive)
+    }
 </script>
 
 <style>
@@ -38,9 +44,9 @@
                 <Title>nejim<img src="nejim.png" alt="nejim.cz logo" width="28" height="28" />cz</Title>
             </Section>
             <Section align="end" toolbar>
-                <IconButton class="material-icons" aria-label="App" on:click={() => active.set('stopwatch')}>schedule</IconButton>
-                <IconButton class="material-icons" aria-label="Info" on:click={() => active.set('info')}>info</IconButton>
-                <IconButton class="material-icons" aria-label="History" on:click={() => active.set('history')}>auto_graph</IconButton>
+                <IconButton class="material-icons" aria-label="App" on:click={() => setActiveFromTopAppBar('stopwatch')}>schedule</IconButton>
+                <IconButton class="material-icons" aria-label="Info" on:click={() => setActiveFromTopAppBar('info')}>info</IconButton>
+                <IconButton class="material-icons" aria-label="History" on:click={() => setActiveFromTopAppBar('history')}>auto_graph</IconButton>
             </Section>
         </Row>
     </TopAppBar>

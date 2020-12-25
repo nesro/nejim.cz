@@ -3,15 +3,14 @@
 </svelte:head>
 
 <script>
-	import Info from "./components/Info.svelte";
-	import TopAppBar from "./components/TopAppBar.svelte";
-	import FastingApp from "./components/FastingApp.svelte";
+	import Info from './components/Info.svelte'
+	import TopAppBar from './components/TopAppBar.svelte'
+	import FastingApp from './components/FastingApp.svelte'
+	import FastImport from './components/FastImport.svelte'
+	import FastHistory from './components/FastHistory.svelte'
+	import Settings from './components/Settings.svelte'
 
-	import { writable } from 'svelte/store';
-
-	import { active } from './store';
-import FastHistory from "./components/FastHistory.svelte";
-	
+	import { active } from './store'
 
 	let activeValue
 	const unsubscribe = active.subscribe(value => {
@@ -19,7 +18,6 @@ import FastHistory from "./components/FastHistory.svelte";
 	});
 
 	export let author;
-
 </script>
 
 <main>
@@ -32,6 +30,10 @@ import FastHistory from "./components/FastHistory.svelte";
 			<FastingApp />
 		{:else if activeValue === 'history'}
 			<FastHistory />
+		{:else if activeValue === 'settings'}
+			<Settings />
+		{:else if activeValue === 'import'}
+			<FastImport />
 		{/if}
 	</div>
 

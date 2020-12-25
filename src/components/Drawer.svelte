@@ -18,6 +18,7 @@
     const setActiveFromDrawer = (toActive) => {
         drawer.set(false)
         active.set(toActive)
+        localStorage.setItem("active", toActive)
     }
 </script>
 
@@ -39,6 +40,12 @@
                 </Item>
                 <Item href="javascript:void(0)" on:click={() => setActiveFromDrawer('history')} activated={activeValue === 'history'}>
                   <Text>Historie</Text>
+                </Item>
+                <Item href="javascript:void(0)" on:click={() => setActiveFromDrawer('import')} activated={activeValue === 'import'}>
+                  <Text>Import</Text>
+                </Item>
+                <Item href="javascript:void(0)" on:click={() => setActiveFromDrawer('settings')} activated={activeValue === 'settings'}>
+                  <Text>Nastavení</Text>
                 </Item>
               </List>
             </Content>

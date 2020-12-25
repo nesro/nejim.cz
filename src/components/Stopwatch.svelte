@@ -35,7 +35,7 @@
         time_24hr: true,
         dateFormat: 'Y-m-d H:i',
 		onChange(selectedDates, dateStr) {
-			console.log('flatpickr hook', selectedDates, dateStr);
+			console.log('flatpickr hook', selectedDates, dateStr, " value=", value);
 		},
 		onOpen() {
 			console.log('onOpen');
@@ -48,7 +48,7 @@
         }
     };
     
-    $: console.log({ value, formattedValue });
+    //$: console.log({ value, formattedValue });
     
 	const handleOpen = (event) => {
         event.preventDefault();
@@ -79,7 +79,7 @@
     <h2>{name}</h2>
     <Flatpickr
             {options}
-            name='end'
+            {name}
             bind:value
             bind:formattedValue
             bind:flatpickr

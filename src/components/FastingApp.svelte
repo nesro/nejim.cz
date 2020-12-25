@@ -2,14 +2,13 @@
 	
 	import Dialog, { Title, Content, Actions, InitialFocus } from '@smui/dialog'
 	import Button, { Label } from '@smui/button'
-	import { Text } from '@smui/list';
     import Progress from './Progress.svelte'
 	import SelectHours from './SelectHours.svelte'
 	import Stopwatch from './Stopwatch.svelte'
 	import FastStatus from './FastStatus.svelte'
 	import { onMount, onDestroy } from 'svelte'
 
-	import { fastStarted, fastingHours } from '../store.js'
+	import { fastStarted, fastingHours, fasts } from '../store.js'
 
 	const defaultFastingHours = "16"
 	let from = new Date()
@@ -72,42 +71,71 @@
 	let simpleDialog
 	let clicked
 
+
+	let saveFastStart = $fastStarted * 1000
+	let saveFastEnd
+
+	let dialogOpen = false
+
+	const openSaveFastDialog = () => {
+		saveFastStart = new Date($fastStarted * 1000)
+		console.log({$fastStarted})
+		console.log(saveFastStart)
+		dialogOpen = true
+		simpleDialog.open()
+	}
+
+	const handleDialogClose = () => {
+		dialogOpen = false
+	}
+	
+	const saveFast = () => {
+		console.log({$fasts})
+		$fasts.push({
+			start: $fastStarted,
+			end: ~~Date.now()/1000,
+			hours: 16.5
+		})
+		localStorage.setItem('fasts', $fasts)
+		dialogOpen = false
+	}
+
 </script>
 
 <main>
 	<h1>Work in progress :)</h1>
 	
+	<Dialog bind:this={simpleDialog} aria-labelledby="simple-title" aria-describedby="simple-content">
+		<Title id="simple-title">Uložit půst</Title>
+		<Content id="simple-content">
+		  Super awesome dialog body text?
 
-	<div>
-		<Dialog bind:this={simpleDialog} aria-labelledby="simple-title" aria-describedby="simple-content">
-		  <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
-		  <Title id="simple-title">Uložit půst</Title>
-		  <Content id="simple-content">
-			Super awesome dialog body text?
+		  {#if dialogOpen}
+		  	<Stopwatch name='saveFastStart' initDate={saveFastStart} />
+		  {/if}
+		  
 
-			<Stopwatch name='from' initDate={xxx} />
-			<Stopwatch name='to' initDate={xxx} />
 
-			Půst lze po uložení editovat v historii půstů.
+		  <Stopwatch name='to' initDate={xxx} />
 
-		  </Content>
-		  <Actions>
-			<Button color="secondary" on:click={() => clicked = 'No'}>
-			  	<Label>No</Label>
-			</Button>
-			<Button color="secondary"on:click={() => clicked = 'Yes'} default use={[InitialFocus]}>
-				<Label>Yes</Label>
-			</Button>
-		  </Actions>
-		</Dialog>
+		  Půst lze po uložení editovat v historii půstů.
+
+		</Content>
+		<Actions>
+		  <Button color="secondary" on:click={handleDialogClose}>
+				<Label>Pokračuj</Label>
+		  </Button>
+		  <Button color="secondary"on:click={saveFast} default use={[InitialFocus]}>
+			  <Label>Ulož</Label>
+		  </Button>
+		</Actions>
+	</Dialog>
+
+	<Button on:click={handleStartFast}><Label>začni půst</Label></Button>
+	<Button on:click={openSaveFastDialog}><Label>Ulož půst</Label></Button>
+	<Button on:click={handleEndFast}><Label>přeruš půst</Label></Button>
+	<Button on:click={handleFastInfo}><Label>info</Label></Button>
 	
-		<Button on:click={() => simpleDialog.open()}><Label>Open Dialog</Label></Button>
-	  </div>
-
-	<Button on:click="{handleStartFast}">začni půst</Button>
-	<Button on:click="{handleEndFast}">přeruš půst</Button>
-	<Button on:click="{handleFastInfo}">půst info</Button>
-
 			<SelectHours name='fastingHours' value={defaultFastingHours} />
 			<Stopwatch name='from' initDate={from} />
 			<Progress bind:this={progressComponent} />
