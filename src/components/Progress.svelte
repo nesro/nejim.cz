@@ -4,14 +4,12 @@
     
     let circle
 
-    export let progressValue
-
     onMount(async () => {
         circle = new ProgressBar.Circle('#container-progress', {
         color: '#FCB03C',
         strokeWidth: 10,
         trailColor: '#f4f4f4',
-        duration: 2000,
+        duration: 500,
         easing: 'linear',
         from: { color: '#e00' },
         text: {
@@ -45,8 +43,11 @@
     });
 
     export function progressAnimate(value, hours, minutes, seconds) {
-        
-        circle.animate(value );
+
+        minutes = ('0' + minutes).slice(-2)
+        seconds = ('0' + seconds).slice(-2)
+
+        circle.animate(value);
         circle.setText(parseFloat(value * 100).toFixed(2) + '%<br>'+hours+':'+minutes+':'+seconds)
     }
 
@@ -55,13 +56,8 @@
 <style>
 
 #container-progress {
-    width: 30px;
-    height: 30px;
-}
-
-#container-progress > svg {
-    width: 100%;
-    display: block;
+    width: 60px;
+    height: 60px;
 }
 
 </style>

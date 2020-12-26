@@ -1,155 +1,162 @@
 <script>
-	
-	import Dialog, { Title, Content, Actions, InitialFocus } from '@smui/dialog'
+	import { onMount, onDestroy } from 'svelte'
+	import { formatDistance, formatDistanceToNow, formatDistanceStrict, parseISO, add, sub, format, differenceInSeconds } from 'date-fns'
+	import { cs } from 'date-fns/esm/locale'
 	import Button, { Label } from '@smui/button'
     import Progress from './Progress.svelte'
 	import SelectHours from './SelectHours.svelte'
 	import Stopwatch from './Stopwatch.svelte'
-	import FastStatus from './FastStatus.svelte'
-	import { onMount, onDestroy } from 'svelte'
 
-	import { fastStarted, fastingHours, fasts } from '../store.js'
+	import { DATETIME_FORMAT, drawer, active, fastStarted, fastEnded, fastingHours, fasts } from '../store.js'
 
-	const defaultFastingHours = "16"
-	let from = new Date()
-	let to = new Date()
-
-	let xxx = new Date()
-
-	to.setHours(to.getHours() + defaultFastingHours)
+	let from = parseISO($fastStarted) || new Date()
+	$: to = add(from, {hours: $fastingHours})
 
 	const handleStartFast = () => {
-		fastStarted.set(Math.floor(from.getTime() / 1000))
+		fastStarted.set(format(from, DATETIME_FORMAT))
 	}
 
 	const handleEndFast = () => {
 		fastStarted.set(null)
+		localStorage.setItem("fastStarted", null)
 	}
 
-	const handleFastInfo = () => {
-		console.log("FAST INFO:")
-		console.log("fastStarted=", $fastStarted)
-	}
-
+	let fastStartedValue = $fastStarted !== 'null' ? $fastStarted : null
 	const fastStartedUnsubscribe = fastStarted.subscribe(value => {
-		console.log('fastStarted local storage updating to: ', value)
-		localStorage.setItem("fastStarted", value)
+		fastStartedValue = value
+		console.log('new fastStartedValue=', fastStartedValue)
+		/*console.log('fastStarted local storage updating to: ', value)
+		localStorage.setItem("fastStarted", value)*/
 	})
 
-	let fastRemaining
-	let now
 
 	let progressComponent
+	let fromComponent
 
-	let fastingSeconds = 0
-	$: fastingSeconds = $fastingHours * 60 * 60
-	$: fastRemainingHours = Math.floor(fastRemaining / 60 / 60)
-	$: fastRemainingMinutes = Math.floor(fastRemaining / 60 % 60)
-	$: fastRemainingSeconds = Math.floor(fastRemaining % 60)
-	$: fastRemainingPercentage = 1 - (fastRemaining / fastingSeconds)
+	let wordsFastStarted
+	let wordsFastRemaining
+	let wordsFastRemainingStrict
+	let remainingSeconds
+	let remainingPercent
+	let remainingSecondsTotal
+
+	let fastRemainingSeconds
+	let fastRemainingMinutes
+	let fastRemainingHours
 
 
 	const updateLoop = () => {
-		now = Math.floor(Date.now() / 1000)
-		 if ($fastStarted != null && $fastStarted > 0) {
-			/* console.log("$fastStarted=", $fastStarted) */
-			fastRemaining = +$fastStarted + fastingSeconds - now
 
-			if (fastRemainingPercentage != null && fastRemainingPercentage != NaN) {
-				/* console.log("fastRemainingPercentage=", fastRemainingPercentage) */
-				progressComponent.progressAnimate(+fastRemainingPercentage, +fastRemainingHours, +fastRemainingMinutes, +fastRemainingSeconds)
+		const started = parseISO(fastStartedValue);
+		to = add(started, {hours: $fastingHours})
+
+		if (false) {
+			console.log('')
+			console.log('updateLoop:')
+			console.log({$fastStarted})
+			console.log({started})
+			console.log({from})
+			console.log({to})
+		}
+
+		if (fastStartedValue === null) {
+			from = new Date()
+		} else {
+
+			remainingSecondsTotal = differenceInSeconds(to, started)
+			remainingSeconds = differenceInSeconds(to, new Date())
+			remainingPercent = (1 - (remainingSeconds / remainingSecondsTotal))
+			
+			wordsFastRemaining = formatDistance(new Date(), to, { addSuffix: false, includeSeconds: true, locale: cs })
+			wordsFastRemainingStrict = formatDistanceStrict(started, to, { addSuffix: false, unit: 'second', locale: cs })
+
+			wordsFastStarted = formatDistanceToNow(started, { addSuffix: true, includeSeconds: true, locale: cs })
+
+			fastRemainingHours = Math.floor(remainingSeconds / 60 / 60)
+			fastRemainingMinutes = Math.floor(remainingSeconds / 60 % 60)
+			fastRemainingSeconds = Math.floor(remainingSeconds % 60)
+
+			if (progressComponent) {
+				progressComponent.progressAnimate(+remainingPercent, +fastRemainingHours, +fastRemainingMinutes, +fastRemainingSeconds)
 			}
 		}
+
+		/*
+		now = Math.floor(Date.now() / 1000)
+		if ($fastStarted != null && $fastStarted > 0) {
+			
+			fastRemaining = +$fastStarted + fastingSeconds - now
+
+			if (fastRemainingPercentage != null && fastRemainingPercentage != NaN && progressComponent != null) {
+				
+				progressComponent.progressAnimate(+fastRemainingPercentage, +fastRemainingHours, +fastRemainingMinutes, +fastRemainingSeconds)
+			}
+		}*/
 		
 		setTimeout(updateLoop, 1000)
 	}
 
-	onMount(updateLoop)
+	onMount(() => {
+
+		updateLoop();
+	})
 	onDestroy(fastStartedUnsubscribe)
 
-	
-	let simpleDialog
-	let clicked
+	const setActiveFromFastingApp = (toActive) => {
+        drawer.set(false)
+        active.set(toActive)
+        localStorage.setItem("active", toActive)
+    }
 
+	const actionFastSave = () => {
 
-	let saveFastStart = $fastStarted * 1000
-	let saveFastEnd
+		const fastEndedDate = format(new Date(), DATETIME_FORMAT)
 
-	let dialogOpen = false
-
-	const openSaveFastDialog = () => {
-		saveFastStart = new Date($fastStarted * 1000)
-		console.log({$fastStarted})
-		console.log(saveFastStart)
-		dialogOpen = true
-		simpleDialog.open()
+		fastEnded.set(fastEndedDate)
+		localStorage.setItem('fastEnded', fastEndedDate) 		
+		setActiveFromFastingApp('fastSave')
 	}
-
-	const handleDialogClose = () => {
-		dialogOpen = false
-	}
-	
-	const saveFast = () => {
-		console.log({$fasts})
-		$fasts.push({
-			start: $fastStarted,
-			end: ~~Date.now()/1000,
-			hours: 16.5
-		})
-		localStorage.setItem('fasts', $fasts)
-		dialogOpen = false
-	}
-
 </script>
 
 <main>
 	<h1>Work in progress :)</h1>
+
+	{#if fastStartedValue === null}
+	<ul>
+		<li><Button on:click={handleStartFast}><Label>začni půst teď</Label></Button></li>
+		<li><Button><Label>změn cíl ({$fastingHours} hodin)</Label></Button></li>
+	</ul>
+	<p>Právě je {format(from, DATETIME_FORMAT)}</p>
+	<p>Půst skončí v {format(to, DATETIME_FORMAT)}</p>
+	{:else}
+	<ul>
+		<li><Button on:click={actionFastSave}><Label>ulož půst</Label></Button></li>
+		<li><Button on:click={handleEndFast}><Label>zruš půst</Label></Button></li>
+	</ul>
+
+	<p>Půst začal {wordsFastStarted} ({fastStartedValue})</p>
+	<p>Půst skončí za {wordsFastRemaining} ({format(to, DATETIME_FORMAT)})</p>
 	
-	<Dialog bind:this={simpleDialog} aria-labelledby="simple-title" aria-describedby="simple-content">
-		<Title id="simple-title">Uložit půst</Title>
-		<Content id="simple-content">
-		  Super awesome dialog body text?
+	<!--<p>{wordsFastRemainingStrict}, remainingSecondsTotal={remainingSecondsTotal}, remainingSeconds={remainingSeconds}, remainingPercent={remainingPercent}%</p>-->
 
-		  {#if dialogOpen}
-		  	<Stopwatch name='saveFastStart' initDate={saveFastStart} />
-		  {/if}
-		  
+	<Stopwatch bind:this={fromComponent} name='from' initDate={from} />
+	<Progress bind:this={progressComponent} />
 
+	<!--<ul>
+		<li>from={format(from, DATETIME_FORMAT)}</li>
+		<li>to={format(to, DATETIME_FORMAT)}</li>
+		<li>fastingHours={$fastingHours}</li>
+		<li>fastRemaining={fastRemaining}</li>
+		<li>fastStarted={$fastStarted}</li>
+		<li>local storage fastStarted={localStorage.getItem("fastStarted")}</li>
+		<li>fastRemainingHours={fastRemainingHours}</li>
+		<li>fastRemainingMinutes={fastRemainingMinutes}</li>
+		<li>fastRemainingSecond={fastRemainingSeconds}</li>
+		<li>fastRemainingPercentage={fastRemainingPercentage}</li>
+		<li>fastRemaining={fastRemaining}</li>
+	</ul>-->
 
-		  <Stopwatch name='to' initDate={xxx} />
+	{/if}
 
-		  Půst lze po uložení editovat v historii půstů.
-
-		</Content>
-		<Actions>
-		  <Button color="secondary" on:click={handleDialogClose}>
-				<Label>Pokračuj</Label>
-		  </Button>
-		  <Button color="secondary"on:click={saveFast} default use={[InitialFocus]}>
-			  <Label>Ulož</Label>
-		  </Button>
-		</Actions>
-	</Dialog>
-
-	<Button on:click={handleStartFast}><Label>začni půst</Label></Button>
-	<Button on:click={openSaveFastDialog}><Label>Ulož půst</Label></Button>
-	<Button on:click={handleEndFast}><Label>přeruš půst</Label></Button>
-	<Button on:click={handleFastInfo}><Label>info</Label></Button>
-	
-			<SelectHours name='fastingHours' value={defaultFastingHours} />
-			<Stopwatch name='from' initDate={from} />
-			<Progress bind:this={progressComponent} />
-			<Stopwatch name='to' initDate={to} />
-			<FastStatus />
-
-			<p>from={from}, to={to}, fastingHours={$fastingHours}, fastRemaining={fastRemaining}</p>
-			<ul>
-				<li>fastStarted={$fastStarted}</li>
-				<li>local storage fastStarted={localStorage.getItem("fastStarted")}</li>
-				<li>fastRemainingHours={fastRemainingHours}</li>
-				<li>fastRemainingMinutes={fastRemainingMinutes}</li>
-				<li>fastRemainingSecond={fastRemainingSeconds}</li>
-				<li>fastRemainingPercentage={fastRemainingPercentage}</li>
-				<li>fastRemaining={fastRemaining}</li>
-			</ul>
+	<SelectHours name='fastingHours' value={$fastingHours} />
 </main>

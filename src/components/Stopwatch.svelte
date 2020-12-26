@@ -6,8 +6,9 @@
 
 <script>
     import Flatpickr from 'svelte-flatpickr/src/Flatpickr.svelte'
-    import { fastingHours } from '../store.js';
+    import { DATETIME_FORMAT, fastStarted, fastingHours } from '../store.js';
     import { onDestroy } from 'svelte'
+    import { formatDistance, formatDistanceToNow, formatDistanceStrict, parseISO, add, sub, format, differenceInSeconds } from 'date-fns'
 
     export let name
     export let initDate
@@ -16,26 +17,21 @@
     let formattedValue
     let flatpickr
 
-    let fastingHoursValue
-	const unsubscribeFastingHours = fastingHours.subscribe(value => {
-        fastingHoursValue = value;
-
-        if (name === 'to') {
-            let now = new Date()
-            now.setHours(now.getHours() + fastingHoursValue)
-            value = now
-            flatpickr && flatpickr.setDate(value, true, 'Y-m-d H:i')
-
-            console.log('new fasting hours', fastingHoursValue, ' new date ', now)
-        }
-	});
-
 	const options = {
         enableTime: true,
         time_24hr: true,
-        dateFormat: 'Y-m-d H:i',
+        dateFormat: 'Y-m-d H:i:S',
 		onChange(selectedDates, dateStr) {
-			console.log('flatpickr hook', selectedDates, dateStr, " value=", value);
+            if (false) {
+                console.log('flatpickr hook', selectedDates, dateStr, " value=", value);
+            }
+
+            if (name === 'from') {
+                const parsed = parseISO(dateStr)
+                const newFastStarted = format(parsed, DATETIME_FORMAT)
+                fastStarted.set(newFastStarted)
+                localStorage.setItem("fastStarted", newFastStarted)
+            }
 		},
 		onOpen() {
 			console.log('onOpen');
@@ -56,24 +52,29 @@
 		if (flatpickr) {
 			flatpickr.open();
 			flatpickr.calendarContainer.focus();
-		}
+		} else {
+            console.log('flatpickr not ready')
+        }
     }
     
 	const handleChange = (event) => {
-		const [ selectedDates, dateStr ] = event.detail;
-		console.log({ selectedDates, dateStr });
+        const [ selectedDates, dateStr ] = event.detail;
+        if (true) {
+            console.log('hook2: ', { selectedDates, dateStr });
+        }
     }
 
     const handleClose = (event) => {
         console.log('closed');
     }
 
-    onDestroy(unsubscribeFastingHours)
+    export function setDate(value) {
+        if (false) {
+            console.log('set date=', value)
+        }
+        flatpickr && flatpickr.setDate(value, true, 'Y-m-d H:i:S')
+    }
 </script>
-
-<style>
-
-  </style>
 
 <main>
     <h2>{name}</h2>

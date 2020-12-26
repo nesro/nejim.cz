@@ -11,13 +11,12 @@
 	import Settings from './components/Settings.svelte'
 
 	import { active } from './store'
+import FastSave from './components/FastSave.svelte';
 
 	let activeValue
 	const unsubscribe = active.subscribe(value => {
 		activeValue = value;
 	});
-
-	export let author;
 </script>
 
 <main>
@@ -30,6 +29,8 @@
 			<FastingApp />
 		{:else if activeValue === 'history'}
 			<FastHistory />
+		{:else if activeValue === 'fastSave'}
+			<FastSave />
 		{:else if activeValue === 'settings'}
 			<Settings />
 		{:else if activeValue === 'import'}
