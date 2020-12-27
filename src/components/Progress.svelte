@@ -48,7 +48,7 @@
         seconds = ('0' + seconds).slice(-2)
 
         circle.animate(value);
-        circle.setText(parseFloat(value * 100).toFixed(2) + '%<br>'+hours+':'+minutes+':'+seconds)
+        circle.setText('Hotovo: '+ parseFloat(value * 100).toFixed(2) + '%<br>Zbývá: '+hours+':'+minutes+':'+seconds)
     }
 
 </script>
