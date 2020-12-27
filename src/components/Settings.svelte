@@ -1,8 +1,9 @@
 <script>
     import Button, { Label } from '@smui/button'
+    import { setStore} from '../store.js'
 
     const handleDeleteHistory = () => {
-        localStorage.setItem("fasts", [])
+        setStore('fasts', [])
         console.log('history deleted')
     }
 </script>

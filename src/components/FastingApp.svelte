@@ -7,35 +7,41 @@
 	import SelectHours from './SelectHours.svelte'
 	import Stopwatch from './Stopwatch.svelte'
 
-	import { DATETIME_FORMAT, drawer, active, fastStarted, fastEnded, fastingHours, fasts } from '../store.js'
+	import { DATETIME_FORMAT, drawer, active, fastStarted, fastEnded, fastingHours, fasts, setStore } from '../store.js'
 
 	let from = parseISO($fastStarted) || new Date()
-	$: to = add(from, {hours: $fastingHours})
+	let to = null
 
 	const handleStartFast = () => {
-		fastStarted.set(format(from, DATETIME_FORMAT))
+		setStore('fastStarted', format(from, DATETIME_FORMAT))
 	}
 
 	const handleEndFast = () => {
-		fastStarted.set(null)
-		localStorage.setItem("fastStarted", null)
+		setStore('fastStarted', null)
 	}
 
 	let fastStartedValue = $fastStarted !== 'null' ? $fastStarted : null
 	const fastStartedUnsubscribe = fastStarted.subscribe(value => {
-		fastStartedValue = value
+		if (value === 'null') {
+			console.log('setting fastStartedValue = null')
+			fastStartedValue = null
+		} else {
+			fastStartedValue = value
+		}
+
+		
 		console.log('new fastStartedValue=', fastStartedValue)
 		/*console.log('fastStarted local storage updating to: ', value)
 		localStorage.setItem("fastStarted", value)*/
 	})
 
+	$: fastToValue = to !== null && format(to, DATETIME_FORMAT)
 
 	let progressComponent
 	let fromComponent
 
 	let wordsFastStarted
 	let wordsFastRemaining
-	let wordsFastRemainingStrict
 	let remainingSeconds
 	let remainingPercent
 	let remainingSecondsTotal
@@ -44,31 +50,39 @@
 	let fastRemainingMinutes
 	let fastRemainingHours
 
+	let nowIs
+	let endsIn
 
 	const updateLoop = () => {
-
-		const started = parseISO(fastStartedValue);
-		to = add(started, {hours: $fastingHours})
-
-		if (false) {
-			console.log('')
-			console.log('updateLoop:')
-			console.log({$fastStarted})
-			console.log({started})
-			console.log({from})
-			console.log({to})
+		if (active === 'stopwatch') {
+			return
 		}
 
 		if (fastStartedValue === null) {
 			from = new Date()
+			nowIs = format(from, DATETIME_FORMAT)
+			to = add(from, {hours: $fastingHours})
+			endsIn = format(to, DATETIME_FORMAT)
 		} else {
+
+			const started = parseISO(fastStartedValue);
+			to = add(started, {hours: $fastingHours})
+
+			if (false) {
+				console.log('')
+				console.log('updateLoop:')
+				console.log({fastStartedValue})
+				console.log({$fastStarted})
+				console.log({started})
+				console.log({from})
+				console.log({to})
+			}
 
 			remainingSecondsTotal = differenceInSeconds(to, started)
 			remainingSeconds = differenceInSeconds(to, new Date())
 			remainingPercent = (1 - (remainingSeconds / remainingSecondsTotal))
 			
 			wordsFastRemaining = formatDistance(new Date(), to, { addSuffix: false, includeSeconds: true, locale: cs })
-			wordsFastRemainingStrict = formatDistanceStrict(started, to, { addSuffix: false, unit: 'second', locale: cs })
 
 			wordsFastStarted = formatDistanceToNow(started, { addSuffix: true, includeSeconds: true, locale: cs })
 
@@ -81,23 +95,10 @@
 			}
 		}
 
-		/*
-		now = Math.floor(Date.now() / 1000)
-		if ($fastStarted != null && $fastStarted > 0) {
-			
-			fastRemaining = +$fastStarted + fastingSeconds - now
-
-			if (fastRemainingPercentage != null && fastRemainingPercentage != NaN && progressComponent != null) {
-				
-				progressComponent.progressAnimate(+fastRemainingPercentage, +fastRemainingHours, +fastRemainingMinutes, +fastRemainingSeconds)
-			}
-		}*/
-		
 		setTimeout(updateLoop, 1000)
 	}
 
 	onMount(() => {
-
 		updateLoop();
 	})
 	onDestroy(fastStartedUnsubscribe)
@@ -109,7 +110,6 @@
     }
 
 	const actionFastSave = () => {
-
 		const fastEndedDate = format(new Date(), DATETIME_FORMAT)
 
 		fastEnded.set(fastEndedDate)
@@ -126,8 +126,8 @@
 		<li><Button on:click={handleStartFast}><Label>začni půst teď</Label></Button></li>
 		<li><Button><Label>změn cíl ({$fastingHours} hodin)</Label></Button></li>
 	</ul>
-	<p>Právě je {format(from, DATETIME_FORMAT)}</p>
-	<p>Půst skončí v {format(to, DATETIME_FORMAT)}</p>
+	<p>Právě je {nowIs}</p>
+	<p>Půst skončí v {endsIn}</p>
 	{:else}
 	<ul>
 		<li><Button on:click={actionFastSave}><Label>ulož půst</Label></Button></li>
@@ -135,7 +135,7 @@
 	</ul>
 
 	<p>Půst začal {wordsFastStarted} ({fastStartedValue})</p>
-	<p>Půst skončí za {wordsFastRemaining} ({format(to, DATETIME_FORMAT)})</p>
+	<p>Půst skončí za {wordsFastRemaining} ({fastToValue})</p>
 	
 	<!--<p>{wordsFastRemainingStrict}, remainingSecondsTotal={remainingSecondsTotal}, remainingSeconds={remainingSeconds}, remainingPercent={remainingPercent}%</p>-->
 
