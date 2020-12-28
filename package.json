@@ -25,6 +25,7 @@
     "@smui/drawer": "^1.0.0",
     "@smui/list": "^1.0.0",
     "date-fns": "^2.16.1",
+    "express": "^4.17.1",
     "flatpickr": "^4.6.6",
     "node-sass": "^5.0.0",
     "postcss": "^8.2.1",
