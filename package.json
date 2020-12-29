@@ -24,9 +24,14 @@
     "@smui/dialog": "^1.0.0",
     "@smui/drawer": "^1.0.0",
     "@smui/list": "^1.0.0",
+    "bcrypt": "^5.0.0",
+    "bcryptjs": "^2.4.3",
     "date-fns": "^2.16.1",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "flatpickr": "^4.6.6",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.8",
     "node-sass": "^5.0.0",
     "postcss": "^8.2.1",
     "progressbar.js": "^1.1.0",
@@ -35,6 +40,7 @@
     "sirv-cli": "^1.0.0",
     "svelte-flatpickr": "^3.1.0",
     "svelte-preprocess": "^4.6.1",
-    "svelte-touch-timepicker": "git+https://github.com/nesro/svelte-touch-timepicker.git"
+    "svelte-touch-timepicker": "git+https://github.com/nesro/svelte-touch-timepicker.git",
+    "validator": "^13.5.2"
   }
 }
