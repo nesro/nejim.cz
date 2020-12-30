@@ -1,5 +1,15 @@
 <svelte:head>
   <title>nejim.cz - Appka na přerušovaný půst</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-LK4FPFX2XK"></script>
+	<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'G-LK4FPFX2XK');
+	</script>
 </svelte:head>
 
 <script>
