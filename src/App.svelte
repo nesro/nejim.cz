@@ -1,7 +1,7 @@
 <svelte:head>
   <title>nejim.cz - Appka na přerušovaný půst</title>
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
+	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-LK4FPFX2XK"></script>
 	<script>
 	window.dataLayer = window.dataLayer || [];
@@ -9,6 +9,14 @@
 	gtag('js', new Date());
 
 	gtag('config', 'G-LK4FPFX2XK');
+	</script>
+
+	<script src="//www.eucookie.eu/public/gdpr-cookie-consent.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		var cookieConsent = new cookieConsent({
+		clientId: '5029dccf-7471-4864-bb26-3885d71cdbe8'
+	});
+	cookieConsent.run();
 	</script>
 </svelte:head>
 
