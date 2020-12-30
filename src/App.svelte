@@ -1,26 +1,5 @@
-<svelte:head>
-  <title>nejim.cz - Appka na přerušovaný půst</title>
-
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-LK4FPFX2XK"></script>
-	<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-
-	gtag('config', 'G-LK4FPFX2XK');
-	</script>
-
-	<script src="//www.eucookie.eu/public/gdpr-cookie-consent.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		var cookieConsent = new cookieConsent({
-		clientId: '5029dccf-7471-4864-bb26-3885d71cdbe8'
-	});
-	cookieConsent.run();
-	</script>
-</svelte:head>
-
 <script>
+	import { onMount, onDestroy } from 'svelte'
 	import Info from './components/Info.svelte'
 	import TopAppBar from './components/TopAppBar.svelte'
 	import FastingApp from './components/FastingApp.svelte'
@@ -29,13 +8,70 @@
 	import Settings from './components/Settings.svelte'
 
 	import { active } from './store'
-import FastSave from './components/FastSave.svelte';
+	import FastSave from './components/FastSave.svelte';
+
+	const cookieConsent = () => {
+		const options = {
+			cookieName: 'nejim_gdpr',
+			heading: 'Nejim.cz GDPR upozornění',
+			description: 'Nejim.cz používá Google Analytics, které Vám do prohlížeče uloží sušenky.',
+			acceptLabel: 'V pohodě',
+			settingsLabel: 'Zajímá mě, co si ukládáte',
+			closeLabel: 'Zavři',
+			choices: {
+				necessary: {
+				label: 'Required cookies',
+				description:
+					"These can't be turned off as they are used to control all the other cookies",
+				value: true
+				},
+				analytics: false
+			},
+			showOnInit: true,
+			categories: {
+				analytics: function() {
+				console.log('No analytics cookies specified')
+				},
+				tracking: function() {
+				console.log('No tracking cookies specified')
+				},
+				marketing: function() {
+				console.log('No marketing cookies specified')
+				},
+				necessary: function() {
+				console.log('No necessary cookies specified')
+				}
+			}
+		}
+		GdprConsent.attachBanner(document.body, options)
+	}
 
 	let activeValue
-	const unsubscribe = active.subscribe(value => {
+	const activeUnsubscribe = active.subscribe(value => {
 		activeValue = value;
 	});
+
+	onMount(() => {
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-LK4FPFX2XK');
+	})
+
+	onDestroy(activeUnsubscribe)
+
 </script>
+
+<svelte:head>
+  <title>nejim.cz - Appka na přerušovaný půst</title>
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-LK4FPFX2XK"></script>
+
+	<link rel="stylesheet" href="//unpkg.com/@beyonk/gdpr-cookie-consent-banner/dist/style.css">
+	<script src="//unpkg.com/@beyonk/gdpr-cookie-consent-banner/dist/browser/bundle.min.js" on:load={cookieConsent}></script>
+</svelte:head>
 
 <main>
 	<TopAppBar />
