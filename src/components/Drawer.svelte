@@ -47,6 +47,12 @@
                 <Item href="javascript:void(0)" on:click={() => setActiveFromDrawer('settings')} activated={activeValue === 'settings'}>
                   <Text>Nastavení</Text>
                 </Item>
+                <Item href="javascript:void(0)" on:click={() => setActiveFromDrawer('login')} activated={activeValue === 'login'}>
+                  <Text>Přihlášení</Text>
+                </Item>
+                <Item href="javascript:void(0)" on:click={() => setActiveFromDrawer('user')} activated={activeValue === 'user'}>
+                  <Text>Můj profil</Text>
+                </Item>
               </List>
             </Content>
           </Drawer>

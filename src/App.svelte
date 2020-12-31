@@ -6,6 +6,8 @@
 	import FastImport from './components/FastImport.svelte'
 	import FastHistory from './components/FastHistory.svelte'
 	import Settings from './components/Settings.svelte'
+	import Login from './components/Login.svelte'
+	import User from './components/User.svelte'
 
 	import { active } from './store'
 	import FastSave from './components/FastSave.svelte';
@@ -15,15 +17,14 @@
 			cookieName: 'nejim_gdpr',
 			heading: 'Nejim.cz GDPR upozornění',
 			description: 'Nejim.cz používá Google Analytics, které Vám do prohlížeče uloží sušenky.',
-			acceptLabel: 'V pohodě',
-			settingsLabel: 'Zajímá mě, co si ukládáte',
+			acceptLabel: 'Přijímam',
+			settingsLabel: 'Chci si nastavit',
 			closeLabel: 'Zavři',
 			choices: {
 				necessary: {
-				label: 'Required cookies',
-				description:
-					"These can't be turned off as they are used to control all the other cookies",
-				value: true
+					label: 'Required cookies',
+					description: "These can't be turned off as they are used to control all the other cookies",
+					value: true
 				},
 				analytics: false
 			},
@@ -69,7 +70,7 @@
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-LK4FPFX2XK"></script>
 
-	<link rel="stylesheet" href="//unpkg.com/@beyonk/gdpr-cookie-consent-banner/dist/style.css">
+	<link rel="stylesheet" type="text/css" href="//unpkg.com/@beyonk/gdpr-cookie-consent-banner/dist/style.css">
 	<script src="//unpkg.com/@beyonk/gdpr-cookie-consent-banner/dist/browser/bundle.min.js" on:load={cookieConsent}></script>
 </svelte:head>
 
@@ -89,6 +90,10 @@
 			<Settings />
 		{:else if activeValue === 'import'}
 			<FastImport />
+		{:else if activeValue === 'login'}
+			<Login />
+		{:else if activeValue === 'user'}
+			<User />
 		{/if}
 	</div>
 
