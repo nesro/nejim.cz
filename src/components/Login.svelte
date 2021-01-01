@@ -1,5 +1,5 @@
 <script>
-    import { setStore, authToken} from '../store.js'
+    import { setStore} from '../store.js'
   
     let password = ''
     let email = ''
@@ -21,7 +21,7 @@
       console.log(parsed)
 
       if (parsed.token) {
-        setStore('authToken', parsed.token)
+        //setStore('authToken', parsed.token)
         user = parsed.user
       } else {
         error = parsed.error
@@ -43,11 +43,6 @@
   
   {#if error}
     <p>{error}</p>
-  {/if}
-
-  {#if $authToken}
-  <h2>auth token</h2>
-    <p>{$authToken}</p>
   {/if}
 
   {#if user}

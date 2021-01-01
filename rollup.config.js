@@ -1,3 +1,4 @@
+import localdev from 'rollup-plugin-dev';
 import svelte from 'rollup-plugin-svelte';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
@@ -74,6 +75,25 @@ export default {
 			],
 		  }),
 
+		// TODO proxy all calls
+		!production && localdev({
+			dirs: ['public'],
+			host: 'localhost',
+			port: 5000,
+			proxy: {
+				'/api/users/me': [
+			  		'localhost:5001',
+			  		{
+						proxyReqPathResolver: () => '/api/users/me'
+					}],
+				'/api/users/login': [
+					'localhost:5001',
+					{
+					  proxyReqPathResolver: () => '/api/users/login'
+				  }]
+				},
+		  }),
+		  
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
 		!production && serve(),
