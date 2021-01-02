@@ -7,8 +7,7 @@
 <script>
     import Flatpickr from 'svelte-flatpickr/src/Flatpickr.svelte'
     import { DATETIME_FORMAT, fastStarted, fastingHours } from '../store.js';
-    import { onDestroy } from 'svelte'
-    import { formatDistance, formatDistanceToNow, formatDistanceStrict, parseISO, add, sub, format, differenceInSeconds } from 'date-fns'
+    import { parseISO, format } from 'date-fns'
 
     export let name
     export let initDate
@@ -17,24 +16,32 @@
     let formattedValue
     let flatpickr
 
+    // https://flatpickr.js.org/options/
+    // don't try to make it work on mobile. it uses native date pickers :(
 	const options = {
         enableTime: true,
         time_24hr: true,
+        static: true,
+        //wrap: true,
         dateFormat: 'Y-m-d H:i:S',
+        altInput: true,
+        altFormat: 'Y-m-d H:i:S',
 		onChange(selectedDates, dateStr) {
             if (false) {
                 console.log('flatpickr hook', selectedDates, dateStr, " value=", value);
             }
 
             if (name === 'from') {
+                console.log({dateStr})
                 const parsed = parseISO(dateStr)
+                console.log({parsed})
                 const newFastStarted = format(parsed, DATETIME_FORMAT)
                 fastStarted.set(newFastStarted)
                 localStorage.setItem("fastStarted", newFastStarted)
             }
 		},
 		onOpen() {
-			console.log('onOpen');
+            console.log('onOpen');
         },
         onClose() {
             console.log('onClose')
@@ -44,14 +51,14 @@
         }
     };
     
-    //$: console.log({ value, formattedValue });
-    
 	const handleOpen = (event) => {
         event.preventDefault();
         console.log(flatpickr)
 		if (flatpickr) {
-			flatpickr.open();
-			flatpickr.calendarContainer.focus();
+            flatpickr.open();
+            console.log('flatpickr opened')
+            flatpickr.calendarContainer.focus();
+            console.log('flatpickr focused')
 		} else {
             console.log('flatpickr not ready')
         }
@@ -59,7 +66,7 @@
     
 	const handleChange = (event) => {
         const [ selectedDates, dateStr ] = event.detail;
-        if (true) {
+        if (false) {
             console.log('hook2: ', { selectedDates, dateStr });
         }
     }
@@ -69,10 +76,14 @@
     }
 
     export function setDate(value) {
-        if (false) {
+        if (true) {
             console.log('set date=', value)
         }
-        flatpickr && flatpickr.setDate(value, true, 'Y-m-d H:i:S')
+        if (flatpickr) {
+            flatpickr.setDate(value, true, DATETIME_FORMAT)
+        } else {
+            console.log('flatpickr not ready for setValue')
+        }
     }
 </script>
 

@@ -1,13 +1,8 @@
 import { writable } from 'svelte/store'
 
+// this format is compatible with fns parseISO
 export const DATETIME_FORMAT = 'yyyy-MM-dd HH:mm:ss'
 //export const DATETIME_FORMAT = 'dd. MM. yyyy HH:mm:ss'
-
-// Y-m-d H:i
-export const DATETIME_FORMAT_NO_SECONDS = 'yyyy-MM-dd HH:mm'
-//export const DATETIME_FORMAT_NO_SECONDS = 'dd. MM. yyyy HH:mm'
-
-//localStorage.setItem('fasts', JSON.stringify([]))
 
 export const active = writable(localStorage.getItem('active') || 'info') // info, stopwatch, history, import
 
