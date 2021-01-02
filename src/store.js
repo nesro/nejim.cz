@@ -1,9 +1,5 @@
 import { writable } from 'svelte/store'
 
-// TODO use cookies to store the token
-// https://dev.to/rdegges/please-stop-using-local-storage-1i04
-//export const authToken = writable(localStorage.getItem('authToken') || null)
-
 export const DATETIME_FORMAT = 'yyyy-MM-dd HH:mm:ss'
 //export const DATETIME_FORMAT = 'dd. MM. yyyy HH:mm:ss'
 
@@ -34,8 +30,7 @@ export function setStore(name, value) {
         fastingHours: fastingHours,
         fastStarted: fastStarted,
         fastEnded: fastEnded,
-        fasts: fasts,
-        authToken, authToken
+        fasts: fasts
     }
 
     if (!Object.prototype.hasOwnProperty.call(stores, name)) {

@@ -28,11 +28,6 @@
 		} else {
 			fastStartedValue = value
 		}
-
-		
-		console.log('new fastStartedValue=', fastStartedValue)
-		/*console.log('fastStarted local storage updating to: ', value)
-		localStorage.setItem("fastStarted", value)*/
 	})
 
 	$: fastToValue = to !== null && format(to, DATETIME_FORMAT)

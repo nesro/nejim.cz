@@ -76,6 +76,7 @@ export default {
 		  }),
 
 		// TODO proxy all calls
+		// https://github.com/sveltejs/svelte/issues/3717
 		!production && localdev({
 			dirs: ['public'],
 			host: 'localhost',

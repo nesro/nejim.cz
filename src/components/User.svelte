@@ -37,7 +37,7 @@
 </script>
 
 {#if user}
-    Jméno: {user}
+    Jméno2: {user}
 {:else}
     <p>Načítám uživatele...</p>
 {/if}
