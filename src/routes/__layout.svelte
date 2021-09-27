@@ -10,7 +10,7 @@
 </main>
 
 <footer>
-	<p>&copy; 2020-2021 nesro - s ❤️ běží na SvelteKit a Vercel</p>
+	<p>&copy; 2020-2021 nesro - s ❤️ běží na SvelteKit u Vercel, data jsou na Mongo Altas</p>
 </footer>
 
 <style>
