@@ -4,11 +4,11 @@ export const MONGODB_URI = import.meta.env.VITE_MONGODB_URI || process.env.MONGO
 export const MONGODB_DB = import.meta.env.VITE_MONGODB_DB || process.env.MONGODB_DB;
 
 if (!MONGODB_URI) {
-	throw new Error('Please define the mongoURI property inside config/default.json');
+	throw new Error('Please define MONGODB_URI');
 }
 
 if (!MONGODB_DB) {
-	throw new Error('Please define the mongoDB property inside config/default.json');
+	throw new Error('Please define MONGODB_DB');
 }
 
 /**
