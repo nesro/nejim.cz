@@ -22,7 +22,7 @@
 	</h1>
 
 	<p>Karle, dáš si k telce ty <span class="red">čipsy</span>?</p>
-	<p>Ne Mařeno. Já už <span class="green">nejim</span>. Nejim. Tečka. Cézet.</p>
+	<p>Ne Mařeno. Já už <span class="green">nejim</span>. Nejim - tečka - cé zet.</p>
 </section>
 
 <style>

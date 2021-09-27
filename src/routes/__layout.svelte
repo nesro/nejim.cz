@@ -10,7 +10,7 @@
 </main>
 
 <footer>
-	<p>&copy; 2020-2021 nesro - s ❤️ běží na SvelteKit</p>
+	<p>&copy; 2020-2021 nesro - s ❤️ běží na SvelteKit a Vercel</p>
 </footer>
 
 <style>
@@ -31,10 +31,6 @@
 		justify-content: center;
 		align-items: center;
 		padding: 40px;
-	}
-
-	footer a {
-		font-weight: bold;
 	}
 
 	@media (min-width: 480px) {
