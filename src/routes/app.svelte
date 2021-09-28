@@ -16,6 +16,7 @@
 
 <svelte:head>
 	<title>About</title>
+	<script src="https://accounts.google.com/gsi/client" async defer></script>
 </svelte:head>
 
 <div class="content">
@@ -26,6 +27,23 @@
 		<a href="https://github.com/nesro/nejim.cz" target="_blank">https://github.com/nesro/nejim.cz</a
 		>
 	</p>
+
+	<p>google</p>
+	<div
+		id="g_id_onload"
+		data-client_id="441424513410-ck588arbet3mcbm3794vkl8ppr6ht1im.apps.googleusercontent.com"
+		data-login_uri="https://nejim.cz/google-login"
+		data-auto_prompt="false"
+	/>
+	<div
+		class="g_id_signin"
+		data-type="standard"
+		data-size="large"
+		data-theme="outline"
+		data-text="sign_in_with"
+		data-shape="rectangular"
+		data-logo_alignment="left"
+	/>
 </div>
 
 <style>
