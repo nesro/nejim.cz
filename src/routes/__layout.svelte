@@ -10,7 +10,12 @@
 </main>
 
 <footer>
-	<p>&copy; 2020-2021 nesro - s ❤️ běží na SvelteKit u Vercel, data jsou na Mongo Altas</p>
+	<ul>
+		<li>&copy; 2020-2021 nesro</li>
+		<li>s ❤️ běží na SvelteKit u Vercel, data jsou na Mongo Altas</li>
+		<li><a href="/privacy-policy">Zásady ochrany osobních údajů</a></li>
+		<li><a href="/terms-of-service">Podmínky použití</a></li>
+	</ul>
 </footer>
 
 <style>
@@ -31,6 +36,11 @@
 		justify-content: center;
 		align-items: center;
 		padding: 40px;
+	}
+
+	footer ul li {
+		list-style: none;
+		text-align: center;
 	}
 
 	@media (min-width: 480px) {
