@@ -41,7 +41,7 @@ export async function post({ locals, body }): Promise<unknown> {
 				picture: payload['picture']
 			};
 			const insertResult = await (await getCollection('users')).insertOne(user);
-			user.id = insertResult.insertedId;
+			user._id = insertResult.insertedId;
 		}
 
 		console.log(
@@ -51,7 +51,7 @@ export async function post({ locals, body }): Promise<unknown> {
 		const sidCookie = await (
 			await getCollection('cookies')
 		).insertOne({
-			userId: user.id
+			userId: user._id.toString()
 		});
 
 		console.log('nejim.cz/google-login', { locals }, { body }, { items });
