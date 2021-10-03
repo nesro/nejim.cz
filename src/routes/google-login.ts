@@ -44,18 +44,22 @@ export async function post({ locals, body }): Promise<unknown> {
 			});
 		}
 
-		console.log(`new user email=${user.email}, _id=${user.id}, googleId=${user.googleId}`);
+		console.log(
+			`user email=${user.email}, _id=${user.id}, googleId=${user.googleId}, payload=${payload}`
+		);
 
-		// const cookieId = uuidv4();
-
-		// await db.cookies.insertOne({
+		const sidCookie = await (
+			await getCollection('cookies')
+		).insertOne({
+			userId: user.id
+		});
 
 		console.log('nejim.cz/google-login', { locals }, { body }, { items });
 
 		return {
 			status: 200,
 			headers: {
-				'Set-Cookie': cookie.serialize('nejim_sid', 'nesrotest', {
+				'Set-Cookie': cookie.serialize('nejim_sid', sidCookie.insertedId.toString(), {
 					httpOnly: true,
 					maxAge: 60 * 60 * 24 * 365,
 					sameSite: 'strict',
