@@ -34,14 +34,14 @@ export async function post({ locals, body }): Promise<unknown> {
 		let user = await (await getCollection('users')).findOne({ googleId });
 
 		if (!user) {
-			user = await (
-				await getCollection('users')
-			).insertOne({
+			user = {
 				googleId,
 				name: payload['name'],
 				email: payload['email'],
 				picture: payload['picture']
-			});
+			};
+			const insertResult = await (await getCollection('users')).insertOne(user);
+			user.id = insertResult.insertedId;
 		}
 
 		console.log(
