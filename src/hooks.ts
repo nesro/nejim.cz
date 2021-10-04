@@ -1,19 +1,30 @@
 import cookie from 'cookie';
-import { connectToDatabase } from '$lib/db';
+import _ from 'lodash';
+import { getCollection } from '$lib/db';
 import { v4 as uuid } from '@lukeed/uuid';
 import type { Handle } from '@sveltejs/kit';
-import type { Db } from 'mongodb';
+import { ObjectId } from 'mongodb';
+import type User from './models/User';
 
 export const handle: Handle = async ({ request, resolve }) => {
-	// Connecting to DB
-	// All database code can only run inside async functions as it uses await
-	const dbConnection = await connectToDatabase();
-	const db: Db = dbConnection.db;
-	const userSession = await db.collection('users').findOne({ email: 'nesro@nesro.cz' });
-	console.log({ userSession });
-
 	const cookies = cookie.parse(request.headers.cookie || '');
 	request.locals.userid = cookies.userid || uuid();
+
+	// console.log('COOKIES', request.headers.cookie);
+	const nejimSid = cookies['nejim_sid'];
+	const session = await (await getCollection('cookies')).findOne({ _id: new ObjectId(nejimSid) });
+
+	if (session) {
+		request.locals.userId = session.userId;
+
+		const user = await (
+			await getCollection('users')
+		).findOne({ _id: new ObjectId(session.userId) });
+
+		request.locals.user = _.pick(user, ['name', 'email', 'picture']);
+	}
+
+	// console.log('NESRO DEBUG SESSSS', { session }, { nejimSid });
 
 	// TODO https://github.com/sveltejs/kit/issues/1046
 	if (request.query.has('_method')) {
@@ -32,4 +43,18 @@ export const handle: Handle = async ({ request, resolve }) => {
 	}
 
 	return response;
+};
+
+// Sets session on client-side
+// try console logging session in routes' load({ session }) functions
+export const getSession = async (request: {
+	locals: { userId: string; user: User };
+}): Promise<any> => {
+	// console.log('NESRO LIFETIME: getting session', { request });
+
+	// Pass cookie with authenticated & email properties to session
+	return {
+		userId: request.locals.userId,
+		user: request.locals.user
+	};
 };

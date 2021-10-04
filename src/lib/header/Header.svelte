@@ -8,6 +8,9 @@
 		<ul>
 			<li class:active={$page.path === '/'}><a sveltekit:prefetch href="/">Domů</a></li>
 			<li class:active={$page.path === '/app'}><a sveltekit:prefetch href="/app">Aplikace</a></li>
+			<li class:active={$page.path === '/profile'}>
+				<a sveltekit:prefetch href="/profile">Profil</a>
+			</li>
 		</ul>
 	</nav>
 </header>

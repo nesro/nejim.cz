@@ -14,9 +14,11 @@
 	<h1>
 		<div class="welcome">
 			nejim
-			<picture>
-				<img src="favicon.png" alt="nejim.cz" />
-			</picture>
+			<sub
+				><picture>
+					<img src="favicon.png" alt="nejim.cz" />
+				</picture>
+			</sub>
 			cz
 		</div>
 	</h1>
