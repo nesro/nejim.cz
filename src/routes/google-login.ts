@@ -66,7 +66,7 @@ export async function post({ locals, body }): Promise<unknown> {
 					path: '/'
 				})
 			},
-			body: 'nesroBody'
+			redirect: '/profile'
 		};
 	} catch (e) {
 		console.error('google error', e);
