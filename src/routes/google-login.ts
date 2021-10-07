@@ -66,9 +66,9 @@ export async function post({ locals, body }): Promise<unknown> {
 					maxAge: 60 * 60 * 24 * 365,
 					sameSite: 'strict',
 					path: '/'
-				})
-			},
-			redirect: '/profile'
+				}),
+				Location: '/profile'
+			}
 		};
 	} catch (e) {
 		console.error('google error', e);
