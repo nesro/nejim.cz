@@ -45,7 +45,9 @@ export async function post({ locals, body }): Promise<unknown> {
 		}
 
 		console.log(
-			`user email=${user.email}, _id=${user.id}, googleId=${user.googleId}, payload=${payload}`
+			`user email=${user.email}, id=${user._id}, googleId=${
+				user.googleId
+			}, payload=${JSON.stringify(payload)}`
 		);
 
 		const sidCookie = await (
