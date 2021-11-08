@@ -59,7 +59,7 @@ export async function post({ locals, body }): Promise<unknown> {
 		console.log('nejim.cz/google-login', { locals }, { body }, { items });
 
 		return {
-			status: 200,
+			status: 302,
 			headers: {
 				'Set-Cookie': cookie.serialize('nejim_sid', sidCookie.insertedId.toString(), {
 					httpOnly: true,
@@ -67,7 +67,7 @@ export async function post({ locals, body }): Promise<unknown> {
 					sameSite: 'strict',
 					path: '/'
 				}),
-				Location: '/profile'
+				Location: '/app'
 			}
 		};
 	} catch (e) {
