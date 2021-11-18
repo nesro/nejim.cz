@@ -40,9 +40,11 @@
 
 <section>
 	{#if user}
+		<p>user</p>
 		<img src={user.picture} alt="avatar" style="border-radius: 50%; border: 1px solid black;" />
 		<p>{JSON.stringify(user)}</p>
 	{:else}
+		<script src="https://accounts.google.com/gsi/client" async defer></script>
 		<div
 			id="g_id_onload"
 			data-client_id="441424513410-ck588arbet3mcbm3794vkl8ppr6ht1im.apps.googleusercontent.com"
