@@ -67,7 +67,7 @@ export async function post({ locals, body }): Promise<unknown> {
 					sameSite: 'strict',
 					path: '/'
 				}),
-				Location: '/app'
+				Location: '/'
 			}
 		};
 	} catch (e) {
