@@ -63,6 +63,10 @@
 	{/if}
 </section>
 
+<section>
+	datetime input: <input type="datetime-local" />
+</section>
+
 <style>
 	section {
 		display: flex;
