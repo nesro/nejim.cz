@@ -11,8 +11,8 @@
 
 <footer>
 	<ul>
-		<li>&copy; 2020-2021 nesro :)</li>
-		<li>s ❤️ běží na SvelteKit u Vercel, data jsou na Mongo Altas</li>
+		<li>&copy; 2020-2021 nesro</li>
+		<li>SvelteKit + Vercel + Mongo Altas = ❤️</li>
 		<li><a href="/privacy-policy">Zásady ochrany osobních údajů</a></li>
 		<li><a href="/terms-of-service">Podmínky použití</a></li>
 	</ul>
