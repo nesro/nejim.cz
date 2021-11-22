@@ -90,12 +90,14 @@
         </div>
     </h1>
 
-    <p>Karle, dáš si k telce ty <span class="red">čipsy</span>?</p>
-    <p>Ne Mařeno. Já už <span class="green">nejim</span>. Nejim - tečka - cé zet.</p>
+    <p style="text-align:center">
+        Karle, dáš si k telce <span class="red">chipsy</span>?<br />
+        Ne, Mařeno, já už <span class="green">nejim</span>!
+    </p>
 </section>
 
 <section>
-    <h2>Kdo nejí?</h2>
+    <h2 style="font-weight:bold">Kdo nejí?</h2>
 
     {#each fastingUsers as fastingUser}
         <!-- <p>{JSON.stringify(fastingUser)}</p> -->
@@ -186,11 +188,14 @@
         position: relative;
         width: 100%;
         height: 0;
-        padding: 0;
+        padding-bottom: 1em;
     }
 
     .welcome img {
-        width: 1em;
-        height: 1em;
+        position: relative;
+        top: 0.4em;
+        width: 2em;
+        height: 2em;
+        margin: 0 -0.75em;
     }
 </style>
