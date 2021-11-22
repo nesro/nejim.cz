@@ -95,7 +95,7 @@
 </section>
 
 <section>
-    <h2>Kdo neji?</h2>
+    <h2>Kdo nejí?</h2>
 
     {#each fastingUsers as fastingUser}
         <!-- <p>{JSON.stringify(fastingUser)}</p> -->
@@ -136,6 +136,19 @@
                 {/each}
             </tbody>
         </table>
+
+        <div>
+            <span>active fast = {activeFast}</span>
+
+            {#if activeFast}
+                <span>duration: {fastDuration}</span>
+            {/if}
+            <form action="/fast" method="post">
+                <input bind:value={from} type="datetime-local" name="from" />
+                <input bind:value={to} type="datetime-local" name="to" />
+                <input type="submit" value="submit" />
+            </form>
+        </div>
     {:else}
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <div
@@ -154,19 +167,6 @@
             data-logo_alignment="left"
         />
     {/if}
-</section>
-
-<section>
-    <span>active fast = {activeFast}</span>
-
-    {#if activeFast}
-        <span>duration: {fastDuration}</span>
-    {/if}
-    <form action="/fast" method="post">
-        <input bind:value={from} type="datetime-local" name="from" />
-        <input bind:value={to} type="datetime-local" name="to" />
-        <input type="submit" value="submit" />
-    </form>
 </section>
 
 <style>
