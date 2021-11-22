@@ -30,10 +30,11 @@
 
 <script lang="ts">
     import type Fast from '../models/Fast';
-    import { page, session } from '$app/stores';
+    // import { page, session } from '$app/stores';
 
     import { formatDistanceToNow } from 'date-fns';
-    import { cs } from 'date-fns/esm/locale';
+    // import { cs } from 'date-fns/esm/locale';
+    import { cs } from 'date-fns/locale';
 
     // import Counter from '$lib/Counter.svelte';
     export let user;
