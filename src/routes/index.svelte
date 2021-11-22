@@ -34,7 +34,7 @@
 
     import { formatDistanceToNow } from 'date-fns';
     // import { cs } from 'date-fns/esm/locale';
-    import { cs } from 'date-fns/locale';
+    import { cs } from 'date-fns/locale/index.js';
 
     // import Counter from '$lib/Counter.svelte';
     export let user;
