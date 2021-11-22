@@ -108,7 +108,7 @@
         />
         <span
             style="position:relative;top:-1em;background:black;color:white;border-radius: 1em;padding: 0.5em 1em;"
-            >{fastingUser.name.split(' ')[0]} si řekl nejim {formatDistanceToNow(
+            >{fastingUser.name.split(' ')[0]} naposledny jedl {formatDistanceToNow(
                 new Date(fastingUser.fastingFrom),
                 { addSuffix: true, includeSeconds: true, locale: cs },
             )}</span
