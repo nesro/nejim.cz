@@ -1,5 +1,6 @@
 import { getCollection } from '$lib/db';
 import type { EndpointOutput } from '@sveltejs/kit';
+import type { UpdateResult } from 'mongodb';
 
 const parseDate = (date: string) => {
     const dateObject = new Date(date);
@@ -13,6 +14,18 @@ const parseDate = (date: string) => {
     return dateObject;
 };
 
+const stopActiveFast = async (userId: string, to: string): Promise<UpdateResult> =>
+    await (
+        await getCollection('fasts')
+    ).updateOne(
+        {
+            userId: userId,
+            to: { $exists: false },
+        },
+        {
+            $set: { to: parseDate(to) },
+        },
+    );
 /**
  * @type {import('@sveltejs/kit').RequestHandler}
  */
@@ -32,28 +45,43 @@ Promise<EndpointOutput> {
     // const items = [...body.entries()].map(([key, value]) => {
 
     try {
-        const from = parseDate(body.get('from'));
-        const to = body.has('to') ? parseDate(body.get('to')) : null;
+        body = JSON.parse(body);
 
-        // save fast to database
-        const fast = await (
-            await getCollection('fasts')
-        ).insertOne({
-            userId: locals.userId,
-            from,
-            ...(!!to && { to }),
-            createdAt: new Date(),
-        });
+        // const command = body.command;
+        // const from = parseDate(body.get('from'));
+        // const to = body.has('to') ? parseDate(body.get('to')) : null;
 
-        console.log('nejim.cz/fast', { locals }, { body }, { fast });
+        if (!body.from && body.to) {
+            stopActiveFast(locals.userId, body.to);
+        } else {
+            const from = parseDate(body.from);
+            const to = body.to ? parseDate(body.to) : null;
+
+            // save fast to database
+            const fast = await (
+                await getCollection('fasts')
+            ).insertOne({
+                userId: locals.userId,
+                from,
+                ...(!!to && { to }),
+                createdAt: new Date(),
+            });
+
+            console.log('nejim.cz/fast', { locals }, { body }, { fast });
+        }
     } catch (error) {
-        console.error('nejim.cz/fast', { locals }, { body }, { error });
+        console.error('ERROR nejim.cz/fast', { locals }, { body }, { error });
     }
 
+    // return {
+    //     status: 302,
+    //     headers: {
+    //         Location: '/',
+    //     },
+    // };
+
     return {
-        status: 302,
-        headers: {
-            Location: '/',
-        },
+        status: 200,
+        body: { status: 'ok2' },
     };
 }

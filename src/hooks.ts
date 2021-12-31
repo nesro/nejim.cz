@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { ObjectId } from 'mongodb';
 // import { minify } from 'html-minifier';
 import { getCollection } from '$lib/db';
-import { prerendering } from '$app/env';
+// import { prerendering } from '$app/env';
 import type User from './models/User';
 import type { Handle } from '@sveltejs/kit';
 

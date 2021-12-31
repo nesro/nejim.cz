@@ -44,6 +44,9 @@
     // last fast is missing "to"
     let activeFast = fasts?.length && !fasts[0].to;
 
+    // used when starting a fast
+    let startFastFrom;
+
     let fastDuration;
 
     let from = activeFast
@@ -61,16 +64,49 @@
 
     // console.log({ fasts });
 
-    const loop = () => {
-        // console.log({ from, to });
-        to = new Date().toJSON().slice(0, 16);
+    const startFast = async () => {
+        const res = await fetch('/fast', {
+            method: 'POST',
+            body: JSON.stringify({
+                command: 'start',
+                from,
+            }),
 
-        fastDuration = new Date(to).getTime() - new Date(from).getTime();
+            credentials: 'include',
+        });
 
-        setTimeout(loop, 1000);
+        const json = await res.json();
+
+        console.log('startFast; res:', res, json);
     };
 
-    loop();
+    const stopActiveFast = async () => {
+        const res = await fetch('/fast', {
+            method: 'POST',
+            body: JSON.stringify({
+                command: 'stop',
+                to: new Date().toJSON().slice(0, 16),
+            }),
+            credentials: 'include',
+        });
+
+        const json = await res.json();
+
+        console.log('stopActiveFast; res:', res, json);
+    };
+
+    // const loop = () => {
+    //     // console.log({ from, to });
+    //     to = new Date().toJSON().slice(0, 16);
+    //     fastDuration = new Date(to).getTime() - new Date(from).getTime();
+    //     setTimeout(loop, 1000);
+    // };
+
+    // loop();
+
+    to = new Date().toJSON().slice(0, 16);
+    startFastFrom = new Date().toJSON().slice(0, 16);
+    fastDuration = new Date(to).getTime() - new Date(from).getTime();
 </script>
 
 <svelte:head>
@@ -133,7 +169,7 @@
                 {#each fasts as fast}
                     <tr>
                         <td>{fast.from}</td>
-                        <td>{fast.to ?? 'running'}</td>
+                        <td>{fast.to ?? `running-${Date.now()}`}</td>
                     </tr>
                 {/each}
             </tbody>
@@ -144,6 +180,10 @@
 
             {#if activeFast}
                 <span>duration: {fastDuration}</span>
+                <button on:click={stopActiveFast}>stop</button>
+            {:else}
+                <input bind:value={startFastFrom} type="datetime-local" name="startFastFrom" />
+                <button on:click={startFast}>startFast</button>
             {/if}
             <form action="/fast" method="post">
                 <input bind:value={from} type="datetime-local" name="from" />

@@ -23,7 +23,7 @@ export async function get({ locals }): Promise<unknown> {
         user.fastingFrom = activeFasts.find((fast) => fast.userId === user._id.toHexString()).from;
     });
 
-    console.log({ activeUserIds }, { activeFasts }, { activeUsers });
+    // console.log({ activeUserIds }, { activeFasts }, { activeUsers });
 
     return { body: activeUsers };
 }
