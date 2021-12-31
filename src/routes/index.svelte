@@ -1,19 +1,19 @@
 <script context="module" lang="ts">
     // export const prerender = true;
 
-    export async function load({ page, fetch, session }) {
+    export async function load({ params, url, fetch, session }) {
         // console.log('SESSION:', { session }, ':SESSION END');
 
         let fasts;
         if (session.user) {
-            fasts = await fetch(`/fasts.json?${page.query}`, { credentials: 'include' }).then((r) =>
+            fasts = await fetch(`/fasts.json?${params}`, { credentials: 'include' }).then((r) =>
                 r.json(),
             );
         }
 
         let fastingUsers;
         try {
-            fastingUsers = await fetch(`/fastingUsers.json?${page.query}`).then((r) => r.json());
+            fastingUsers = await fetch(`/fastingUsers.json?${params}`).then((r) => r.json());
         } catch (e) {
             console.log('error', e);
         }
@@ -144,7 +144,7 @@
         />
         <span
             style="position:relative;top:-1em;background:black;color:white;border-radius: 1em;padding: 0.5em 1em;"
-            >{fastingUser.name.split(' ')[0]} naposledny jedl {formatDistanceToNow(
+            >{fastingUser.name.split(' ')[0]} naposledy jedl {formatDistanceToNow(
                 new Date(fastingUser.fastingFrom),
                 { addSuffix: true, includeSeconds: true, locale: cs },
             )}</span
