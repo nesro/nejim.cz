@@ -42,7 +42,7 @@
     export let fastingUsers;
 
     // last fast is missing "to"
-    let activeFast = fasts?.length && !fasts[0].to;
+    const activeFast = fasts?.length && !fasts[0].to;
 
     // used when starting a fast
     let startFastFrom;
@@ -71,10 +71,8 @@
                 command: 'start',
                 from,
             }),
-
             credentials: 'include',
         });
-
         const json = await res.json();
 
         console.log('startFast; res:', res, json);
@@ -89,7 +87,6 @@
             }),
             credentials: 'include',
         });
-
         const json = await res.json();
 
         console.log('stopActiveFast; res:', res, json);
@@ -104,7 +101,12 @@
 
     // loop();
 
+    let date = new Date();
+    $: now = date.toJSON().slice(0, 16);
+
     to = new Date().toJSON().slice(0, 16);
+
+    // save current time to know from when to start a new fast
     startFastFrom = new Date().toJSON().slice(0, 16);
     fastDuration = new Date(to).getTime() - new Date(from).getTime();
 </script>
@@ -169,7 +171,7 @@
                 {#each fasts as fast}
                     <tr>
                         <td>{fast.from}</td>
-                        <td>{fast.to ?? `running-${Date.now()}`}</td>
+                        <td>{fast.to ?? now}</td>
                     </tr>
                 {/each}
             </tbody>

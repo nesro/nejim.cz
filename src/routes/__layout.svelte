@@ -11,7 +11,7 @@
 
 <footer>
     <ul style="line-height:1em;font-size:0.9em">
-        <li>&copy; 2020-2021 nesro</li>
+        <li>&copy; 2020-2022 nesro</li>
         <li>SvelteKit + Vercel + Mongo Altas = ❤️</li>
         <li>
             nejim.cz je open-source: <a
