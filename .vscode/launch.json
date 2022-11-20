@@ -1,0 +1,57 @@
+{
+    "configurations": [
+        {
+            "name": "Attach by Process ID",
+            "processId": "${command:PickProcess}",
+            "request": "attach",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
+            "name": "Attach",
+            "port": 9229,
+            "request": "attach",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
+            "command": "npm run dev",
+            "name": "Run npm start",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug app",
+            "runtimeExecutable": "node",
+            "runtimeArgs": ["--inspect=9222"],
+            "program": "${workspaceFolder}/services.js",
+            "console": "integratedTerminal",
+            "env": {
+                "RAZ": "dva"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "SK debug",
+            "program": "${workspaceFolder}/node_modules/vite/bin/vite.js",
+            "args": [
+                "dev"
+            ],
+            "runtimeArgs": ["--trace-warnings"],
+            "console": "integratedTerminal",
+            "autoAttachChildProcesses": true,
+            "env": {
+                "VERBOSE_LOGGING": "true",
+                "SAPPER_REBUILD": "true",
+                "NODE_ENV": "development",
+            },
+        }
+    ]
+}
