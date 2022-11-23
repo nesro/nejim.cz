@@ -1,4 +1,4 @@
-import pick from 'lodash';
+import _ from 'lodash';
 
 import { getCollection, fastsDb } from '../lib/server/db';
 import { invalid } from '@sveltejs/kit';
@@ -36,7 +36,7 @@ export const load: ServerLoad = async (event) => {
     // const game = new Game(cookies.get('sverdle'));
 
     return {
-        user: pick(event.locals.user, ['picture', 'name']),
+        user: _.pick(event.locals.user, ['picture', 'name']),
         raz: 'dva',
         fasts: JSON.stringify(fasts),
     };
