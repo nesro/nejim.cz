@@ -96,7 +96,7 @@
 </pre>
 
 {#if activeFast}
-    <p>active fast={JSON.stringify(activeFast)}</p>
+    <!-- <p>active fast={JSON.stringify(activeFast)}</p> -->
 
     <label for="file">Fast progress:</label>
     <progress id="file" value={activeFastProgress} max="100">{activeFastProgress}%</progress>

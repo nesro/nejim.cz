@@ -36,6 +36,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltejs/adapter-vercel": "^1.0.0-next.84",
 		"lodash": "^4.17.21",
 		"mongodb": "^4.11.0",
 		"uuid": "^9.0.0"
