@@ -1,3 +1,5 @@
+import { pick } from 'lodash';
+
 import { getCollection, fastsDb } from '../lib/server/db';
 import { invalid } from '@sveltejs/kit';
 
@@ -16,7 +18,7 @@ const getFasts = async (userId: ObjectId) => {
 export const load: ServerLoad = async (event) => {
     // const { cookies } = event;
 
-    if (!event.locals.user._id) {
+    if (!event.locals.user?._id) {
         return {};
     }
     console.error('user._id=', event.locals.user._id);
@@ -34,6 +36,7 @@ export const load: ServerLoad = async (event) => {
     // const game = new Game(cookies.get('sverdle'));
 
     return {
+        user: pick(event.locals.user, ['picture', 'name']),
         raz: 'dva',
         fasts: JSON.stringify(fasts),
     };
