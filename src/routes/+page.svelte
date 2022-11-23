@@ -106,8 +106,9 @@
     </h1>
 
     {#if data.user}
+        {JSON.stringify(data.user)}
         <div class="box" style="display: inline;">
-            Hey {data.user.name.split(' ')[0]}<img
+            Hey {(data.user.name ?? '').split(' ')[0]}<img
                 src={data.user.picture}
                 alt="avatar"
                 style="vertical-align:middle; margin: 0.5em; width: 2em; height: 2em; border-radius: 25%; border: 1px solid black;"
