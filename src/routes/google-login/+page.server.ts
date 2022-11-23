@@ -25,8 +25,11 @@ export const actions: Actions = {
 
         console.error('I have google data:', [...data]);
 
+        const credential = data.get('credential') as string;
+        // g_csrf_token is not used, yet
+
         const ticket = await client.verifyIdToken({
-            idToken: data.get('idToken') as string,
+            idToken: credential,
             audience: CLIENT_ID,
         } as VerifyIdTokenOptions);
 
