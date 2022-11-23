@@ -6,7 +6,7 @@
 
     export let data: PageData;
 
-    export let form: ActionData;
+    // export let form: ActionData;
 
     export let activeFast: Fast | null = null;
 
@@ -279,13 +279,5 @@
         width: 2em;
         height: 2em;
         margin: 0 -0.8em;
-    }
-
-    .red {
-        color: red;
-    }
-
-    .green {
-        color: rgb(8, 143, 8);
     }
 </style>

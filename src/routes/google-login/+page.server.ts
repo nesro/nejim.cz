@@ -1,12 +1,12 @@
 import { getCollection } from '../../lib/server/db';
-import { redirect } from '@sveltejs/kit';
+import { redirect, invalid } from '@sveltejs/kit';
 import {
     OAuth2Client,
     type OAuth2ClientOptions,
     type VerifyIdTokenOptions,
 } from 'google-auth-library';
 
-import { invalid, type Actions } from '@sveltejs/kit/types/internal';
+import type { Actions } from '@sveltejs/kit/types/internal';
 
 // TODO
 // https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
