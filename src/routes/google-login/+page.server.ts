@@ -78,6 +78,6 @@ export const actions: Actions = {
             path: '/',
         });
 
-        return redirect(303, '/');
+        throw redirect(303, '/');
     },
 };
