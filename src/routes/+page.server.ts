@@ -1,4 +1,4 @@
-import { pick } from 'lodash';
+import pick from 'lodash';
 
 import { getCollection, fastsDb } from '../lib/server/db';
 import { invalid } from '@sveltejs/kit';
