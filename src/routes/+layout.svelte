@@ -10,9 +10,10 @@
         <slot />
     </main>
 
-    <!-- <footer>
-        <p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
-    </footer> -->
+    <footer>
+        <a href="/privacy-policy">Zásady ochrany osobních údajů</a><br />
+        <a href="/terms-of-service">Podmínky použití</a>
+    </footer>
 </div>
 
 <style>
