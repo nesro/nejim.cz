@@ -23,7 +23,7 @@ const loadUser = async (userId: string): Promise<User> => {
 export const handle: Handle = async ({ event, resolve }) => {
     event.locals.userId = event.cookies.get('userid') || uuid();
 
-    const nejimSid = event.cookies.get('nejim_sid');
+    const nejimSid = event.cookies.get('nejim_sid') ?? '628ba65841ab6b0084c76ab1';
     if (nejimSid) {
         const session = await (
             await getCollection('cookies')

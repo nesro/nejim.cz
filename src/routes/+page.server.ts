@@ -50,23 +50,24 @@ export const actions: Actions = {
 
         const data = await event.request.formData();
 
-        // date and time are local time and that's okay here
-        const date = data.get('start-fast-at-date') as string;
-        const time = data.get('start-fast-at-time') as string;
+        const fromTs = Number.parseInt(data.get('start-fast-at-timestamp') as string);
+        const from = new Date(fromTs);
         const goal = Number.parseInt(data.get('start-fast-goal') as string);
 
-        const from = new Date(`${date} ${time}`);
+        const mood = Number.parseInt(data.get('mood') as string);
 
         if (isNaN(from.getTime())) {
             return invalid(400, { from, incorrect: true });
         }
 
-        console.log('fast-start:', { date, time, from, utc: from.toISOString() });
+        console.log('fast-start:', { fromTs, from, utc: from.toISOString() });
         fastsDb.insertOne({
             userId: event.locals.user._id,
             createdAt: new Date(),
+            fromTs,
             from,
             goal,
+            mood,
             // ...(!!to && { to }),
         });
 

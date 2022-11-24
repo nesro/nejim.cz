@@ -17,22 +17,45 @@
     // console.log(`NESRO DATE: ${date}, ${date.getHours()}`);
     // console.error(data, form);
 
+    let startFastAtTimestampBind: number;
     let startFastAtDateBind: string;
     let startFastAtTimeBind: string;
+
     let endFastAtDateBind: string;
     let endFastAtTimeBind: string;
-    let startFastGoalBind: number;
+    let startFastGoalBind = 16;
     let fastingForMs: number;
+
+    let moodBind = '50';
 
     const fasts = JSON.parse(data.fasts ?? '[]') as Fast[];
 
     export let fastingForSeconds = 0;
+
+    const moodToEmoji = (mood?: number) => {
+        switch (mood) {
+            case 100:
+                return '😄';
+            case 50:
+                return '🙂';
+            case 0:
+                return '😔';
+            default:
+                return '?';
+        }
+    };
 
     if (fasts[0] && !fasts[0].to) {
         activeFast = fasts[0];
     }
 
     const finishedFasts = fasts.filter((f) => f.to);
+
+    const updateTimestamp = () => {
+        startFastAtTimestampBind = new Date(
+            `${startFastAtDateBind} ${startFastAtTimeBind}`,
+        ).getTime();
+    };
 
     onMount(async () => {
         date.setSeconds(0);
@@ -49,6 +72,8 @@
                 '0',
             )}`;
         }
+        updateTimestamp();
+
         const endFastAtDate = <HTMLInputElement>document.getElementById('end-fast-at-date');
         if (endFastAtDate) {
             endFastAtDateBind = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -58,10 +83,10 @@
             endFastAtTimeBind = `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
         }
 
-        const startFastGoal = <HTMLInputElement>document.getElementById('start-fast-goal');
-        if (startFastGoal) {
-            startFastGoal.value = '16';
-        }
+        // const startFastGoal = <HTMLInputElement>document.getElementById('start-fast-goal');
+        // if (startFastGoal) {
+        //     startFastGoal.value = 16;
+        // }
 
         const intervalFunction = () => {
             if (!activeFast) {
@@ -141,6 +166,7 @@
                             1000
                         ).toFixed(5)} hours)
                     </li>
+                    <li>{moodToEmoji(activeFast.mood)}</li>
                 </ul>
             </div>
 
@@ -185,16 +211,25 @@
                 <h2>start fast at</h2>
 
                 <input
+                    name="start-fast-at-timestamp"
+                    type="number"
+                    id="start-fast-at-timestamp"
+                    bind:value={startFastAtTimestampBind}
+                />
+
+                <input
                     name="start-fast-at-date"
                     type="date"
                     id="start-fast-at-date"
                     bind:value={startFastAtDateBind}
+                    on:change={updateTimestamp}
                 />
                 <input
                     name="start-fast-at-time"
                     type="time"
                     id="start-fast-at-time"
                     bind:value={startFastAtTimeBind}
+                    on:change={updateTimestamp}
                 />
 
                 <input
@@ -204,7 +239,46 @@
                     bind:value={startFastGoalBind}
                 />
 
-                <b>total fast duration=</b>
+                <ul>
+                    <li>mood={moodBind}</li>
+                    <li>
+                        <input
+                            type="radio"
+                            id="mood100"
+                            name="mood"
+                            value="100"
+                            bind:group={moodBind}
+                        />
+                        <label for="mood100">😄</label>
+                    </li>
+                    <li>
+                        <input
+                            type="radio"
+                            id="mood50"
+                            name="mood"
+                            value="50"
+                            bind:group={moodBind}
+                        />
+                        <label for="mood50">🙂</label>
+                    </li>
+                    <li>
+                        <input
+                            type="radio"
+                            id="mood0"
+                            name="mood"
+                            value="0"
+                            bind:group={moodBind}
+                        />
+                        <label for="mood0">😔</label>
+                    </li>
+                </ul>
+
+                <b
+                    >end time: startFastAtTimestampBind={startFastAtTimestampBind},
+                    startFastGoalBind={startFastGoalBind} - {new Date(
+                        startFastAtTimestampBind + startFastGoalBind * 1000 * 60 * 60,
+                    )}</b
+                >
                 <button>send!</button>
             </form>
         {/if}
