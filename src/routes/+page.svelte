@@ -21,14 +21,39 @@
     let startFastAtDateBind: string;
     let startFastAtTimeBind: string;
 
+    let endFastAtTimestampBind: number;
     let endFastAtDateBind: string;
     let endFastAtTimeBind: string;
+
     let startFastGoalBind = 16;
     let fastingForMs: number;
+    let activeFastMissingHours: number;
+
+    let pastFastFromTs: number[] = [];
 
     let moodBind = '50';
 
     const fasts = JSON.parse(data.fasts ?? '[]') as Fast[];
+
+    const formatDate = (value?: string | number | Date): string => {
+        if (!value) {
+            value = 0;
+        }
+        const date = new Date(value);
+        return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+            .toISOString()
+            .split('T')[0];
+    };
+    const formatTime = (value?: string | number | Date): string => {
+        if (!value) {
+            value = 0;
+        }
+        const date = new Date(value);
+        return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+            .toISOString()
+            .split('T')[1]
+            .slice(0, 5);
+    };
 
     export let fastingForSeconds = 0;
 
@@ -49,13 +74,24 @@
         activeFast = fasts[0];
     }
 
-    const finishedFasts = fasts.filter((f) => f.to);
+    const finishedFasts = fasts.filter((f) => f.to && f.toTs).map((f)=>{
+        ...f,
+    });
 
     const updateTimestamp = () => {
         startFastAtTimestampBind = new Date(
             `${startFastAtDateBind} ${startFastAtTimeBind}`,
         ).getTime();
+
+        endFastAtTimestampBind = new Date(`${endFastAtDateBind} ${endFastAtTimeBind}`).getTime();
     };
+
+    // TODO: rename
+    const setTimestamp = (date: string, time: string) => {
+        return new Date(
+            `${startFastAtDateBind} ${startFastAtTimeBind}`,
+        ).getTime();
+    }
 
     onMount(async () => {
         date.setSeconds(0);
@@ -72,8 +108,6 @@
                 '0',
             )}`;
         }
-        updateTimestamp();
-
         const endFastAtDate = <HTMLInputElement>document.getElementById('end-fast-at-date');
         if (endFastAtDate) {
             endFastAtDateBind = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -82,6 +116,7 @@
         if (endFastAtTime) {
             endFastAtTimeBind = `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
         }
+        updateTimestamp();
 
         // const startFastGoal = <HTMLInputElement>document.getElementById('start-fast-goal');
         // if (startFastGoal) {
@@ -89,12 +124,11 @@
         // }
 
         const intervalFunction = () => {
-            if (!activeFast) {
+            if (!activeFast || !activeFast.fromTs) {
                 return;
             }
 
-            const fromTimestamp = new Date(activeFast!.from).getTime();
-            fastingForMs = Date.now() - fromTimestamp;
+            fastingForMs = Date.now() - activeFast.fromTs;
             fastingForSeconds = Math.floor(fastingForMs / 1000);
 
             // how long the fast lasts / 8 hours
@@ -102,6 +136,15 @@
                 (fastingForMs / ((activeFast.goal ?? 16) * 60 * 60 * 1000)) *
                 100
             ).toFixed(4);
+
+            activeFastMissingHours =
+                (fastingForMs -
+                    new Date(
+                        activeFast.fromTs + (activeFast.goal ?? 16) * 60 * 60 * 1000,
+                    ).getTime()) /
+                1000 /
+                60 /
+                60;
         };
 
         const interval = setInterval(intervalFunction, 100);
@@ -116,6 +159,10 @@
         console.error(endFastAtDateBind, endFastAtTimeBind);
     };
 </script>
+
+<svelte:head>
+    <script src="https://accounts.google.com/gsi/client"></script>
+</svelte:head>
 
 <section>
     <h1>
@@ -147,26 +194,43 @@
                     >{activeFastProgress}%</progress
                 >
                 <ul>
-                    <li>from: {new Date(activeFast.from)} (utc: {activeFast.from})</li>
-                    <li>goal: {activeFast.goal} hours</li>
                     <li>
-                        to: {new Date(
-                            new Date(activeFast.from).getTime() +
-                                (activeFast.goal ?? 16) * 60 * 60 * 1000,
-                        )} - (utc: {new Date(
-                            new Date(activeFast.from).getTime() +
-                                (activeFast.goal ?? 16) * 60 * 60 * 1000,
-                        ).toISOString()})
+                        from: {new Intl.DateTimeFormat('cs-CZ', {
+                            timeStyle: 'medium',
+                            dateStyle: 'medium',
+                        }).format(new Date(activeFast.fromTs))}
+                        <small>(utc: {new Date(activeFast.fromTs).toISOString()})</small>
                     </li>
+
+                    <li>goal:{activeFast.goal} hours, mood: {moodToEmoji(activeFast.mood)}</li>
                     <li>
-                        activeFastProgress: {activeFastProgress} %, (thats {(
-                            fastingForMs /
-                            60 /
-                            60 /
-                            1000
-                        ).toFixed(5)} hours)
+                        fasting progress: {activeFastProgress} %
                     </li>
-                    <li>{moodToEmoji(activeFast.mood)}</li>
+                    <li>thats {(fastingForMs / 60 / 60 / 1000).toFixed(5)} hours</li>
+
+                    <li>
+                        goal meet:
+                        {new Intl.DateTimeFormat('cs-CZ', {
+                            timeStyle: 'medium',
+                            dateStyle: 'medium',
+                        }).format(
+                            new Date(activeFast.fromTs + (activeFast.goal ?? 16) * 60 * 60 * 1000),
+                        )}
+                        <small
+                            >(utc: {new Date(
+                                activeFast.fromTs + (activeFast.goal ?? 16) * 60 * 60 * 1000,
+                            ).toISOString()})</small
+                        >
+                    </li>
+
+                    <li>
+                        {#if activeFastMissingHours > 0}
+                            You need to fast for {activeFastMissingHours} more hours
+                        {:else}
+                            Your goal is met! You are fasting for {Math.abs(activeFastMissingHours)}
+                            extra hours
+                        {/if}
+                    </li>
                 </ul>
             </div>
 
@@ -181,12 +245,21 @@
                 }}
             >
                 <h2>end the fast!</h2>
+
+                <input
+                    name="end-fast-at-timestamp"
+                    type="number"
+                    id="end-fast-at-timestamp"
+                    bind:value={endFastAtTimestampBind}
+                />
+
                 <input
                     name="end-fast-at-date"
                     type="date"
                     id="end-fast-at-date"
                     bind:value={endFastAtDateBind}
                     on:input={endFastInput}
+                    on:change={updateTimestamp}
                 />
                 <input
                     name="end-fast-at-time"
@@ -194,6 +267,7 @@
                     id="end-fast-at-time"
                     bind:value={endFastAtTimeBind}
                     on:input={endFastInput}
+                    on:change={updateTimestamp}
                 />
                 <button>send!</button>
             </form>
@@ -286,15 +360,36 @@
         <h2>Past Fasts:</h2>
 
         <ul>
-            {#each finishedFasts as fast}
-                <li>from={fast.from}, to={fast.to}, goal={fast.goal}</li>
+            {#each finishedFasts as fast, i}
+                <li>
+                    <form
+                        method="POST"
+                        action="?/fast-start"
+                        use:enhance={() => {
+                            // prevent default callback from resetting the form
+                            return ({ update }) => {
+                                update({ reset: false });
+                            };
+                        }}
+                    >
+                        id={fast._id}
+                        from: <input type="date" value={formatDate(fast.fromTs)} />
+                        <input type="time" value={formatTime(fast.fromTs)} />
+                        <input type="number" value="fast.fromTs" bind:value={pastFastFromTs[i]} />
+
+                        to: <input type="date" value={formatDate(fast.toTs)} />
+                        <input type="time" value={formatTime(fast.toTs)} />
+
+                        total time={(((fast.toTs ?? 0) - fast.fromTs) / 1000 / 60 / 60).toFixed(2)} hours
+
+                        <button>edit</button>
+                    </form>
+                </li>
             {/each}
         </ul>
     {:else}
         <div class="box" style="max-width: 300px">
             To track your progress, log in with Google:
-
-            <script src="https://accounts.google.com/gsi/client"></script>
             <div
                 id="g_id_onload"
                 data-client_id="441424513410-ck588arbet3mcbm3794vkl8ppr6ht1im.apps.googleusercontent.com"
