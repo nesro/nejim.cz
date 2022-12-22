@@ -74,9 +74,7 @@
         activeFast = fasts[0];
     }
 
-    const finishedFasts = fasts.filter((f) => f.to && f.toTs).map((f)=>{
-        ...f,
-    });
+    const finishedFasts = fasts.filter((f) => f.to && f.toTs);
 
     const updateTimestamp = () => {
         startFastAtTimestampBind = new Date(
@@ -88,10 +86,8 @@
 
     // TODO: rename
     const setTimestamp = (date: string, time: string) => {
-        return new Date(
-            `${startFastAtDateBind} ${startFastAtTimeBind}`,
-        ).getTime();
-    }
+        return new Date(`${startFastAtDateBind} ${startFastAtTimeBind}`).getTime();
+    };
 
     onMount(async () => {
         date.setSeconds(0);
@@ -375,7 +371,8 @@
                         id={fast._id}
                         from: <input type="date" value={formatDate(fast.fromTs)} />
                         <input type="time" value={formatTime(fast.fromTs)} />
-                        <input type="number" value="fast.fromTs" bind:value={pastFastFromTs[i]} />
+                        <!-- bind:value={pastFastFromTs[i]} -->
+                        <input type="number" value="fast.fromTs" />
 
                         to: <input type="date" value={formatDate(fast.toTs)} />
                         <input type="time" value={formatTime(fast.toTs)} />
@@ -408,7 +405,6 @@
         </div>
     {/if}
 </section>
-
 
 <p>ahoj :)</p>
 
