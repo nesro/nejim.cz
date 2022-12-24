@@ -12,5 +12,12 @@ export default class Fast {
         public mood?: number,
         public finishedPercent?: number,
         public _id?: ObjectId,
+
+        public editFromTime?: string,
+        public editFromDate?: string,
+        public editFromTs?: number,
+        public editToTime?: string,
+        public editToDate?: string,
+        public editToTs?: number,
     ) {}
 }

@@ -6,16 +6,11 @@
 
     export let data: PageData;
 
-    // export let form: ActionData;
-
     export let activeFast: Fast | null = null;
 
     export let activeFastProgress = '';
 
     export let date = new Date();
-
-    // console.log(`NESRO DATE: ${date}, ${date.getHours()}`);
-    // console.error(data, form);
 
     let startFastAtTimestampBind: number;
     let startFastAtDateBind: string;
@@ -28,8 +23,6 @@
     let startFastGoalBind = 16;
     let fastingForMs: number;
     let activeFastMissingHours: number;
-
-    let pastFastFromTs: number[] = [];
 
     let moodBind = '50';
 
@@ -74,7 +67,37 @@
         activeFast = fasts[0];
     }
 
-    const finishedFasts = fasts.filter((f) => f.to && f.toTs);
+    const editFastUpdate = (fast: Fast): undefined => {
+        fast.editFromTs = new Date(`${fast.editFromDate} ${fast.editFromTime}`).getTime();
+        fast.editToTs = new Date(`${fast.editToDate} ${fast.editToTime}`).getTime();
+
+        console.log(
+            `update FASTFROMTS=${fast.fromTs} -> from=${fast.editFromDate} ${
+                fast.editFromTime
+            }, fast.editFromTs=${
+                fast.editFromTs
+            } (date.getTimezoneOffset()=${date.getTimezoneOffset()})`,
+        );
+
+        // to let svelte redraw what was just set
+        finishedFasts = finishedFasts;
+
+        return undefined;
+    };
+
+    let finishedFasts = fasts
+        .filter((f) => f.to && f.toTs)
+        .map((fast) => {
+            fast.editFromTime = formatTime(fast.fromTs);
+            fast.editFromDate = formatDate(fast.fromTs);
+            fast.editToTime = formatTime(fast.toTs);
+            fast.editToDate = formatDate(fast.toTs);
+
+            fast.editFromTs = fast.fromTs;
+            fast.editToTs = fast.toTs;
+
+            return fast;
+        });
 
     const updateTimestamp = () => {
         startFastAtTimestampBind = new Date(
@@ -174,13 +197,12 @@
     </h1>
 
     {#if data.user}
-        {JSON.stringify(data.user)}
         <div class="box" style="display: inline;">
             Hey {(data.user.name ?? '').split(' ')[0]}<img
                 src={data.user.picture}
                 alt="avatar"
                 style="vertical-align:middle; margin: 0.5em; width: 2em; height: 2em; border-radius: 25%; border: 1px solid black;"
-            />, you're logged in! Want to <a href="">log out</a>?
+            />, you're logged in! Want to <a href="#todo">log out</a>?
         </div>
 
         {#if activeFast}
@@ -190,22 +212,17 @@
                     >{activeFastProgress}%</progress
                 >
                 <ul>
-                    <li>
+                    <li style="font-family:'Courier New', Courier, monospace">
                         from: {new Intl.DateTimeFormat('cs-CZ', {
                             timeStyle: 'medium',
                             dateStyle: 'medium',
                         }).format(new Date(activeFast.fromTs))}
-                        <small>(utc: {new Date(activeFast.fromTs).toISOString()})</small>
+                        <small
+                            >(utc: {new Date(activeFast.fromTs).toISOString()}, ts: {activeFast.fromTs})</small
+                        >
                     </li>
-
-                    <li>goal:{activeFast.goal} hours, mood: {moodToEmoji(activeFast.mood)}</li>
-                    <li>
-                        fasting progress: {activeFastProgress} %
-                    </li>
-                    <li>thats {(fastingForMs / 60 / 60 / 1000).toFixed(5)} hours</li>
-
-                    <li>
-                        goal meet:
+                    <li style="font-family:'Courier New', Courier, monospace">
+                        goal:
                         {new Intl.DateTimeFormat('cs-CZ', {
                             timeStyle: 'medium',
                             dateStyle: 'medium',
@@ -215,16 +232,36 @@
                         <small
                             >(utc: {new Date(
                                 activeFast.fromTs + (activeFast.goal ?? 16) * 60 * 60 * 1000,
-                            ).toISOString()})</small
+                            ).toISOString()}, ts: {activeFast.fromTs +
+                                (activeFast.goal ?? 16) * 60 * 60 * 1000})</small
                         >
                     </li>
 
+                    <li>goal:{activeFast.goal} hours, mood: {moodToEmoji(activeFast.mood)}</li>
+
                     <li>
-                        {#if activeFastMissingHours > 0}
-                            You need to fast for {activeFastMissingHours} more hours
-                        {:else}
-                            Your goal is met! You are fasting for {Math.abs(activeFastMissingHours)}
+                        fasting progress: {activeFastProgress} %
+                    </li>
+                    <li>
+                        thats {(fastingForMs / 60 / 60 / 1000).toFixed(5)} hours (fastingForMs={fastingForMs})
+                    </li>
+
+                    <li>
+                        {#if fastingForMs > (activeFast.goal ?? 16) * 1000 * 60 * 60}
+                            Your goal is met! You are fasting for {(
+                                (fastingForMs - (activeFast.goal ?? 16) * 60 * 60 * 1000) /
+                                60 /
+                                60 /
+                                1000
+                            ).toFixed(5)}
                             extra hours
+                        {:else}
+                            You need to fast for {(
+                                ((activeFast.goal ?? 16) * 60 * 60 * 1000 - fastingForMs) /
+                                60 /
+                                60 /
+                                1000
+                            ).toFixed(5)} more hours
                         {/if}
                     </li>
                 </ul>
@@ -360,7 +397,7 @@
                 <li>
                     <form
                         method="POST"
-                        action="?/fast-start"
+                        action="?/edit-fast"
                         use:enhance={() => {
                             // prevent default callback from resetting the form
                             return ({ update }) => {
@@ -368,14 +405,49 @@
                             };
                         }}
                     >
-                        id={fast._id}
-                        from: <input type="date" value={formatDate(fast.fromTs)} />
-                        <input type="time" value={formatTime(fast.fromTs)} />
-                        <!-- bind:value={pastFastFromTs[i]} -->
-                        <input type="number" value="fast.fromTs" />
+                        <input
+                            type="hidden"
+                            name="edit-fast-id"
+                            id="edit-fast-id"
+                            value={fast._id}
+                        />
 
-                        to: <input type="date" value={formatDate(fast.toTs)} />
-                        <input type="time" value={formatTime(fast.toTs)} />
+                        id={fast._id}
+                        from:
+                        <input
+                            type="date"
+                            bind:value={fast.editFromDate}
+                            on:change={editFastUpdate(fast)}
+                        />
+                        <input
+                            type="time"
+                            bind:value={fast.editFromTime}
+                            on:change={editFastUpdate(fast)}
+                        />
+                        <input
+                            type="number"
+                            name="edit-fast-from-timestamp"
+                            id="edit-fast-from-timestamp"
+                            bind:value={fast.editFromTs}
+                        />
+                        (fromTs={fast.fromTs}) to:
+
+                        <input
+                            type="date"
+                            bind:value={fast.editToDate}
+                            on:change={editFastUpdate(fast)}
+                        />
+                        <input
+                            type="time"
+                            bind:value={fast.editFromTime}
+                            on:change={editFastUpdate(fast)}
+                        />
+                        <input
+                            type="number"
+                            name="edit-fast-to-timestamp"
+                            id="edit-fast-to-timestamp"
+                            bind:value={fast.editToTs}
+                        />
 
                         total time={(((fast.toTs ?? 0) - fast.fromTs) / 1000 / 60 / 60).toFixed(2)} hours
 
@@ -406,7 +478,8 @@
     {/if}
 </section>
 
-<p>ahoj :)</p>
+<hr />
+user="{JSON.stringify(data.user)}"
 
 <style>
     form,
@@ -425,8 +498,8 @@
     section {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        /* justify-content: center;
+        align-items: center; */
         flex: 1;
     }
 

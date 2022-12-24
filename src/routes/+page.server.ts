@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import { fastsDb } from '../lib/server/db';
-import { invalid } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import type { Actions, ServerLoad } from '@sveltejs/kit/types/internal';
+import { ObjectId } from 'mongodb';
 
 export const load: ServerLoad = async (event) => {
     if (!event.locals.user?._id) {
@@ -23,7 +24,7 @@ export const load: ServerLoad = async (event) => {
 export const actions: Actions = {
     'fast-start': async (event) => {
         if (!event.locals.user._id) {
-            return invalid(403);
+            return fail(403);
         }
 
         const data = await event.request.formData();
@@ -35,10 +36,10 @@ export const actions: Actions = {
         const mood = Number.parseInt(data.get('mood') as string);
 
         if (isNaN(from.getTime())) {
-            return invalid(400, { from, incorrect: true });
+            return fail(400, { from, incorrect: true });
         }
 
-        console.log('fast-start:', { fromTs, from, utc: from.toISOString() });
+        // console.log('fast-start:', { fromTs, from, utc: from.toISOString() });
         fastsDb.insertOne({
             userId: event.locals.user._id,
             createdAt: new Date(),
@@ -53,7 +54,7 @@ export const actions: Actions = {
 
     'end-fast': async (event) => {
         if (!event.locals.user._id) {
-            return invalid(403);
+            return fail(403);
         }
 
         const data = await event.request.formData();
@@ -61,17 +62,56 @@ export const actions: Actions = {
         const to = new Date(toTs);
 
         if (isNaN(to.getTime())) {
-            return invalid(400, { incorrect: true });
+            return fail(400, { incorrect: true });
         }
 
         // find active fast
 
         const activeFast = await fastsDb.getActiveFast(event.locals.user._id);
         if (!activeFast) {
-            return invalid(400, { reason: 'no active fast to end', incorrect: true });
+            return fail(400, { reason: 'no active fast to end', incorrect: true });
         }
 
         const updateResult = await fastsDb.update({ ...activeFast, to, toTs });
+
+        // TODO: test if it is ok
+        console.log({ updateResult });
+
+        return { success: true };
+    },
+
+    'edit-fast': async (event) => {
+        if (!event.locals.user._id) {
+            return fail(403);
+        }
+
+        const data = await event.request.formData();
+
+        const fastId = new ObjectId(data.get('edit-fast-id') as string);
+        if (!fastId || !ObjectId.isValid(fastId)) {
+            return fail(400);
+        }
+
+        debugger;
+
+        const fastToEdit = await fastsDb.findOne({ _id: fastId });
+        if (!fastToEdit) {
+            return fail(400, { reason: 'no fast to edit found', incorrect: true });
+        }
+        if (!fastToEdit.userId.equals(event.locals.user._id)) {
+            return fail(403);
+        }
+
+        fastToEdit.fromTs = Number.parseInt(data.get('edit-fast-from-timestamp') as string);
+        fastToEdit.from = new Date(fastToEdit.fromTs);
+        fastToEdit.toTs = Number.parseInt(data.get('edit-fast-to-timestamp') as string);
+        fastToEdit.to = new Date(fastToEdit.toTs);
+
+        if (isNaN(fastToEdit.from.getTime()) || isNaN(fastToEdit.to.getTime())) {
+            return fail(400, { incorrect: true });
+        }
+
+        const updateResult = await fastsDb.update(fastToEdit);
 
         // TODO: test if it is ok
         console.log({ updateResult });

@@ -1,5 +1,5 @@
 import { getCollection } from '../../lib/server/db';
-import { redirect, invalid } from '@sveltejs/kit';
+import { redirect, fail } from '@sveltejs/kit';
 import {
     OAuth2Client,
     type OAuth2ClientOptions,
@@ -36,7 +36,7 @@ export const actions: Actions = {
         const payload = ticket.getPayload();
 
         if (!payload) {
-            return invalid(400, { incorrect: true });
+            return fail(400, { incorrect: true });
         }
 
         const googleId = payload['sub'];
