@@ -439,7 +439,7 @@
                         />
                         <input
                             type="time"
-                            bind:value={fast.editFromTime}
+                            bind:value={fast.editToTime}
                             on:change={editFastUpdate(fast)}
                         />
                         <input
@@ -452,6 +452,8 @@
                         total time={(((fast.toTs ?? 0) - fast.fromTs) / 1000 / 60 / 60).toFixed(2)} hours
 
                         <button>edit</button>
+
+                        <!-- <br /><pre>{JSON.stringify(fast)}</pre> -->
                     </form>
                 </li>
             {/each}
