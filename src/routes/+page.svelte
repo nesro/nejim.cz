@@ -107,9 +107,66 @@
         endFastAtTimestampBind = new Date(`${endFastAtDateBind} ${endFastAtTimeBind}`).getTime();
     };
 
-    // TODO: rename
-    const setTimestamp = (date: string, time: string) => {
-        return new Date(`${startFastAtDateBind} ${startFastAtTimeBind}`).getTime();
+    const initCalHeatmap = (fasts: Fast[]) => {
+        const cal = new (window as any).CalHeatMap();
+
+        const data = [];
+
+        for (const fast of fasts) {
+            if (!fast.toTs) {
+                continue;
+            }
+
+            const fastedForHours = (fast.toTs - fast.fromTs) / 60 / 60 / 1000;
+
+            // console.log({ fastedFor });
+            const value = fastedForHours > (fast.goal ?? 16) ? fastedForHours : 1;
+
+            data.push({ date: Math.floor(fast.fromTs / 1000), value });
+        }
+
+        const start = new Date();
+        start.setMonth(date.getMonth() - 1);
+
+        const parser = function (data: { date: string; value: number }[]) {
+            const stats: Record<string, number> = {};
+            for (const d of data) {
+                stats[d.date] = d.value;
+            }
+            return stats;
+        };
+
+        cal.init({
+            start,
+            range: 2,
+            domain: 'month',
+            data,
+            highlight: 'now',
+
+            afterLoadData: parser,
+            // itemName: ['ppb', 'ppb'],
+
+            subDomain: 'x_day',
+            cellSize: 20,
+            subDomainTextFormat: function (_date: unknown, value: number) {
+                return value;
+            },
+            subDomainTitleFormat: { Date },
+
+            domainGutter: 10,
+            verticalOrientation: false,
+            label: {
+                position: 'top',
+                rotate: '',
+                offset: {
+                    x: 15,
+                    y: 10,
+                },
+            },
+            legend: [0, 10, 20, 30],
+            tooltip: true,
+            displayLegend: false,
+        });
     };
 
     onMount(async () => {
@@ -169,6 +226,8 @@
         const interval = setInterval(intervalFunction, 100);
         intervalFunction();
 
+        initCalHeatmap(fasts);
+
         return () => {
             clearInterval(interval);
         };
@@ -181,6 +240,13 @@
 
 <svelte:head>
     <script src="https://accounts.google.com/gsi/client"></script>
+
+    <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+    <script
+        type="text/javascript"
+        src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"
+    ></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
 </svelte:head>
 
 <section>
@@ -458,6 +524,9 @@
                 </li>
             {/each}
         </ul>
+
+        <h2>heatmap</h2>
+        <div id="cal-heatmap" />
     {:else}
         <div class="box" style="max-width: 300px">
             To track your progress, log in with Google:
