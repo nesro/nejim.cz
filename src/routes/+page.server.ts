@@ -92,8 +92,6 @@ export const actions: Actions = {
             return fail(400);
         }
 
-        debugger;
-
         const fastToEdit = await fastsDb.findOne({ _id: fastId });
         if (!fastToEdit) {
             return fail(400, { reason: 'no fast to edit found', incorrect: true });
@@ -108,6 +106,43 @@ export const actions: Actions = {
         fastToEdit.to = new Date(fastToEdit.toTs);
 
         if (isNaN(fastToEdit.from.getTime()) || isNaN(fastToEdit.to.getTime())) {
+            return fail(400, { incorrect: true });
+        }
+
+        const updateResult = await fastsDb.update(fastToEdit);
+
+        // TODO: test if it is ok
+        console.log({ updateResult });
+
+        return { success: true };
+    },
+
+    'change-start-active-fast': async (event) => {
+        if (!event.locals.user._id) {
+            return fail(403);
+        }
+
+        const data = await event.request.formData();
+
+        const fastId = new ObjectId(data.get('edit-fast-id') as string);
+        if (!fastId || !ObjectId.isValid(fastId)) {
+            return fail(400);
+        }
+
+        const fastToEdit = await fastsDb.findOne({ _id: fastId });
+        if (!fastToEdit) {
+            return fail(400, { reason: 'no fast to edit found', incorrect: true });
+        }
+        if (!fastToEdit.userId.equals(event.locals.user._id)) {
+            return fail(403);
+        }
+
+        fastToEdit.fromTs = Number.parseInt(
+            data.get('change-start-active-fast-at-timestamp') as string,
+        );
+        fastToEdit.from = new Date(fastToEdit.fromTs);
+
+        if (isNaN(fastToEdit.from.getTime())) {
             return fail(400, { incorrect: true });
         }
 

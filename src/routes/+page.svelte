@@ -107,6 +107,15 @@
         endFastAtTimestampBind = new Date(`${endFastAtDateBind} ${endFastAtTimeBind}`).getTime();
     };
 
+    let changeStartActiveFastAtTimestampBind: number;
+    let changeStartActiveFastAtDateBind: string;
+    let changeStartActiveFastAtTimeBind: string;
+    const updateTimestampStartActiveFast = () => {
+        changeStartActiveFastAtTimestampBind = new Date(
+            `${changeStartActiveFastAtDateBind} ${changeStartActiveFastAtTimeBind}`,
+        ).getTime();
+    };
+
     const initCalHeatmap = (fasts: Fast[]) => {
         const cal = new (window as any).CalHeatMap();
 
@@ -194,10 +203,26 @@
         }
         updateTimestamp();
 
-        // const startFastGoal = <HTMLInputElement>document.getElementById('start-fast-goal');
-        // if (startFastGoal) {
-        //     startFastGoal.value = 16;
-        // }
+        if (activeFast && activeFast.fromTs) {
+            const startFastDate = new Date(activeFast.fromTs);
+            const changeStartActiveFastAtDate = <HTMLInputElement>(
+                document.getElementById('change-start-active-fast-at-date')
+            );
+            if (changeStartActiveFastAtDate) {
+                changeStartActiveFastAtDateBind = `${startFastDate.getFullYear()}-${
+                    startFastDate.getMonth() + 1
+                }-${startFastDate.getDate()}`;
+            }
+            const changeStartActiveFastAtTime = <HTMLInputElement>(
+                document.getElementById('change-start-active-fast-at-time')
+            );
+            if (changeStartActiveFastAtTime) {
+                changeStartActiveFastAtTimeBind = `${startFastDate.getHours()}:${String(
+                    startFastDate.getMinutes(),
+                ).padStart(2, '0')}`;
+            }
+            updateTimestampStartActiveFast();
+        }
 
         const intervalFunction = () => {
             if (!activeFast || !activeFast.fromTs) {
@@ -232,10 +257,6 @@
             clearInterval(interval);
         };
     });
-
-    const endFastInput = () => {
-        console.error(endFastAtDateBind, endFastAtTimeBind);
-    };
 </script>
 
 <svelte:head>
@@ -335,6 +356,44 @@
 
             <form
                 method="POST"
+                action="?/change-start-active-fast"
+                use:enhance={() => {
+                    // prevent default callback from resetting the form
+                    return ({ update }) => {
+                        update({ reset: false });
+                    };
+                }}
+            >
+                <h2>change start of the running fast</h2>
+
+                <input type="hidden" name="edit-fast-id" id="edit-fast-id" value={activeFast._id} />
+
+                <input
+                    name="change-start-active-fast-at-timestamp"
+                    type="number"
+                    id="change-start-active-fast-at-timestamp"
+                    bind:value={changeStartActiveFastAtTimestampBind}
+                />
+
+                <input
+                    name="change-start-active-fast-at-date"
+                    type="date"
+                    id="change-start-active-fast-at-date"
+                    bind:value={changeStartActiveFastAtDateBind}
+                    on:change={updateTimestampStartActiveFast}
+                />
+                <input
+                    name="change-start-active-fast-at-time"
+                    type="time"
+                    id="change-start-active-fast-at-time"
+                    bind:value={changeStartActiveFastAtTimeBind}
+                    on:change={updateTimestampStartActiveFast}
+                />
+                <button>send!</button>
+            </form>
+
+            <form
+                method="POST"
                 action="?/end-fast"
                 use:enhance={() => {
                     // prevent default callback from resetting the form
@@ -357,7 +416,6 @@
                     type="date"
                     id="end-fast-at-date"
                     bind:value={endFastAtDateBind}
-                    on:input={endFastInput}
                     on:change={updateTimestamp}
                 />
                 <input
@@ -365,7 +423,6 @@
                     type="time"
                     id="end-fast-at-time"
                     bind:value={endFastAtTimeBind}
-                    on:input={endFastInput}
                     on:change={updateTimestamp}
                 />
                 <button>send!</button>
