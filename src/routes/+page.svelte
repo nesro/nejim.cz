@@ -172,7 +172,7 @@
                     y: 10,
                 },
             },
-            legend: [0, 10, 20, 30],
+            legend: [16, 19, 21, 24],
             tooltip: true,
             displayLegend: false,
         });
@@ -354,16 +354,7 @@
                 </ul>
             </div>
 
-            <form
-                method="POST"
-                action="?/change-start-active-fast"
-                use:enhance={() => {
-                    // prevent default callback from resetting the form
-                    return ({ update }) => {
-                        update({ reset: false });
-                    };
-                }}
-            >
+            <form method="POST" action="?/change-start-active-fast">
                 <h2>change start of the running fast</h2>
 
                 <input type="hidden" name="edit-fast-id" id="edit-fast-id" value={activeFast._id} />
@@ -392,16 +383,7 @@
                 <button>send!</button>
             </form>
 
-            <form
-                method="POST"
-                action="?/end-fast"
-                use:enhance={() => {
-                    // prevent default callback from resetting the form
-                    return ({ update }) => {
-                        update({ reset: false });
-                    };
-                }}
-            >
+            <form method="POST" action="?/end-fast">
                 <h2>end the fast!</h2>
 
                 <input
@@ -428,16 +410,7 @@
                 <button>send!</button>
             </form>
         {:else}
-            <form
-                method="POST"
-                action="?/fast-start"
-                use:enhance={() => {
-                    // prevent default callback from resetting the form
-                    return ({ update }) => {
-                        update({ reset: false });
-                    };
-                }}
-            >
+            <form method="POST" action="?/fast-start">
                 <h2>start fast at</h2>
 
                 <input
@@ -518,16 +491,7 @@
         <ul>
             {#each finishedFasts as fast, i}
                 <li>
-                    <form
-                        method="POST"
-                        action="?/edit-fast"
-                        use:enhance={() => {
-                            // prevent default callback from resetting the form
-                            return ({ update }) => {
-                                update({ reset: false });
-                            };
-                        }}
-                    >
+                    <form method="POST" action="?/edit-fast">
                         <input
                             type="hidden"
                             name="edit-fast-id"

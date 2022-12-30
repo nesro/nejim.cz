@@ -3,6 +3,10 @@
     import './styles.css';
 </script>
 
+<svelte:head>
+    <title>Nejim.cz - přerušovaný půst</title>
+</svelte:head>
+
 <div class="app">
     <!-- <Header /> -->
 
