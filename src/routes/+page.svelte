@@ -178,28 +178,30 @@
         });
     };
 
+    const getMonth = (date: Date) => String(date.getMonth() + 1).padStart(2, '0');
+    const getDay = (date: Date) => String(date.getDate()).padStart(2, '0');
+    const getHours = (date: Date) => String(date.getHours()).padStart(2, '0');
+    const getMinutes = (date: Date) => String(date.getMinutes()).padStart(2, '0');
+
     onMount(async () => {
         date.setSeconds(0);
         date.setMilliseconds(0);
 
         const startFastAtDate = <HTMLInputElement>document.getElementById('start-fast-at-date');
         if (startFastAtDate) {
-            startFastAtDateBind = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+            startFastAtDateBind = `${date.getFullYear()}-${getMonth(date)}-${getDay(date)}`;
         }
         const startFastAtTime = <HTMLInputElement>document.getElementById('start-fast-at-time');
         if (startFastAtTime) {
-            startFastAtTimeBind = `${date.getHours()}:${String(date.getMinutes()).padStart(
-                2,
-                '0',
-            )}`;
+            startFastAtTimeBind = `${getHours(date)}:${getMinutes(date)}`;
         }
         const endFastAtDate = <HTMLInputElement>document.getElementById('end-fast-at-date');
         if (endFastAtDate) {
-            endFastAtDateBind = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+            endFastAtDateBind = `${date.getFullYear()}-${getMonth(date)}-${getDay(date)}`;
         }
         const endFastAtTime = <HTMLInputElement>document.getElementById('end-fast-at-time');
         if (endFastAtTime) {
-            endFastAtTimeBind = `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+            endFastAtTimeBind = `${getHours(date)}:${getMinutes(date)}`;
         }
         updateTimestamp();
 
@@ -209,17 +211,17 @@
                 document.getElementById('change-start-active-fast-at-date')
             );
             if (changeStartActiveFastAtDate) {
-                changeStartActiveFastAtDateBind = `${startFastDate.getFullYear()}-${
-                    startFastDate.getMonth() + 1
-                }-${startFastDate.getDate()}`;
+                changeStartActiveFastAtDateBind = `${startFastDate.getFullYear()}-${getMonth(
+                    startFastDate,
+                )}-${getDay(startFastDate)}`;
             }
             const changeStartActiveFastAtTime = <HTMLInputElement>(
                 document.getElementById('change-start-active-fast-at-time')
             );
             if (changeStartActiveFastAtTime) {
-                changeStartActiveFastAtTimeBind = `${startFastDate.getHours()}:${String(
-                    startFastDate.getMinutes(),
-                ).padStart(2, '0')}`;
+                changeStartActiveFastAtTimeBind = `${getHours(startFastDate)}:${getMinutes(
+                    startFastDate,
+                )}`;
             }
             updateTimestampStartActiveFast();
         }
@@ -373,6 +375,7 @@
                     bind:value={changeStartActiveFastAtDateBind}
                     on:change={updateTimestampStartActiveFast}
                 />
+                ({changeStartActiveFastAtDateBind})
                 <input
                     name="change-start-active-fast-at-time"
                     type="time"
